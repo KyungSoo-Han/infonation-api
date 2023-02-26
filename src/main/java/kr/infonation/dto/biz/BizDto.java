@@ -6,7 +6,29 @@ import kr.infonation.domain.biz.Biz;
 import lombok.Data;
 
 public class BizDto {
+    @Data
+    @ApiModel("BizResponse")
+    public static class Response {
+        private Long id;
+        private String name;
+        private String engName;
+        private String bizNo;
+        private String ownerName;
+        private String bizType;
+        private String bizItem;
+        private Address address;
+        public Response(Biz biz) {
+            this.id = biz.getId();
+            this.name = biz.getName();
+            this.engName = biz.getEngName();
+            this.bizNo = biz.getBizNo();
+            this.ownerName = biz.getOwnerName();
+            this.bizType = biz.getBizType();
+            this.bizItem = biz.getBizItem();
+            this.address = biz.getAddress();
 
+        }
+    }
     @Data
     @ApiModel("BizCreateRequest")
     public static class CreateRequest{

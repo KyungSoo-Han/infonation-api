@@ -1,9 +1,6 @@
 package kr.infonation.repository.center;
 
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import kr.infonation.domain.biz.QBiz;
-import kr.infonation.domain.center.QCenter;
 import kr.infonation.dto.center.CenterDto;
 import kr.infonation.dto.center.QCenterDto;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +13,7 @@ import static kr.infonation.domain.center.QCenter.center;
 
 @Repository
 @RequiredArgsConstructor
-public class CenterQRepository {
+public class CenterRepositoryDsl {
     private final JPAQueryFactory queryFactory;
 
     public List<CenterDto> findCenter(){
