@@ -2,13 +2,17 @@ package kr.infonation.controller.biz;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import kr.infonation.common.dto.ResponseDto;
+import kr.infonation.config.CustomException;
 import kr.infonation.domain.biz.Biz;
 import kr.infonation.dto.biz.BizDto;
 import kr.infonation.service.biz.BizService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/biz")
 public class BizApiController {
     private final BizService bizService;
+
 
     @PostMapping
     public ResponseDto<BizDto.CreateResponse> createBiz(@RequestBody BizDto.CreateRequest request) {
@@ -33,6 +38,14 @@ public class BizApiController {
         BizDto.UpdateResponse response = new BizDto.UpdateResponse(biz);
 
         return ResponseDto.SuccessResponse(response,HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseDto<BizDto.DeleteResponse> deleteBiz (@PathVariable Long id) throws CustomException {
+        bizService.deleteBiz(id);
+
+        BizDto.DeleteResponse response = new BizDto.DeleteResponse(id);
+        return ResponseDto.SuccessResponse(response, HttpStatus.OK);
     }
     /*
     @PostMapping

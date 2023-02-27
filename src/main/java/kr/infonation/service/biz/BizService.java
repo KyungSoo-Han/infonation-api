@@ -1,6 +1,7 @@
 package kr.infonation.service.biz;
 
 
+import kr.infonation.config.CustomException;
 import kr.infonation.domain.biz.Biz;
 import kr.infonation.dto.biz.BizDto;
 import kr.infonation.repository.biz.BizRepository;
@@ -29,4 +30,12 @@ public class BizService {
         return biz;
     }
 
+    public void deleteBiz(Long id) throws CustomException {
+
+        if (!bizRepository.existsById(id)) {
+            throw new CustomException("존재하지 않는 사업장입니다.");
+        }
+        bizRepository.deleteById(id);
+
+    }
 }

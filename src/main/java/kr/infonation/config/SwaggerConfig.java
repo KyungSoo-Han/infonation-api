@@ -1,5 +1,6 @@
 package kr.infonation.config;
 
+import kr.infonation.common.dto.ResponseDto;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -32,6 +33,7 @@ public class SwaggerConfig {
     @Bean
     public Docket commonApi(){
         return new Docket(DocumentationType.SWAGGER_2)
+                .ignoredParameterTypes(ResponseDto.class)
                 .groupName("swg-group1")
                 .apiInfo(this.apiInfo())
                 .select()
@@ -39,4 +41,5 @@ public class SwaggerConfig {
                 .paths(PathSelectors.any())
                 .build();
     }
+
 }
