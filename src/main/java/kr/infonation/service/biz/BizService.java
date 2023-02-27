@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -30,6 +31,7 @@ public class BizService {
         return biz;
     }
 
+    @Transactional
     public void deleteBiz(Long id) throws CustomException {
 
         if (!bizRepository.existsById(id)) {
@@ -37,5 +39,9 @@ public class BizService {
         }
         bizRepository.deleteById(id);
 
+    }
+    public List<Biz> findBiz() {
+        List<Biz> bizList = bizRepository.findAll();
+        return bizList;
     }
 }

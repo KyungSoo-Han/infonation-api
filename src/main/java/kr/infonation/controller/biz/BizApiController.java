@@ -14,6 +14,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 @RestController
@@ -21,6 +26,18 @@ import springfox.documentation.annotations.ApiIgnore;
 public class BizApiController {
     private final BizService bizService;
 
+    @GetMapping
+    public ResponseDto<List<BizDto.Response>> findBiz(){
+        List<Biz> bizList = bizService.findBiz();
+        List<BizDto.Response> response = bizList
+                                            .stream()
+                                            .map(b -> new BizDto.Response(b))
+                                            .collect(Collectors.toList());
+        //Map<String, Object> data = new HashMap<>();
+        //data.put("data", response);
+        //data.put("size", response.size());
+        return ResponseDto.SuccessResponse(response, HttpStatus.OK);
+    }
 
     @PostMapping
     public ResponseDto<BizDto.CreateResponse> createBiz(@RequestBody BizDto.CreateRequest request) {
