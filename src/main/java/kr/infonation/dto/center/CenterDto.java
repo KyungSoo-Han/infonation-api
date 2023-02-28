@@ -6,6 +6,7 @@ import kr.infonation.domain.base.Address;
 import kr.infonation.domain.biz.Biz;
 import kr.infonation.domain.center.Center;
 import kr.infonation.dto.biz.BizDto;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
@@ -76,6 +77,14 @@ public class CenterDto {
             this.address = address;
             this.bizDto = bizDto;
         }
+
+    }
+
+    @Data
+    @AllArgsConstructor
+    @ApiModel("CenterDeleteResponse")
+    public static class DeleteResponse {
+        private final Long id;
 
     }
 }

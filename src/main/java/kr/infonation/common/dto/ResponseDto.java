@@ -12,14 +12,14 @@ import springfox.documentation.annotations.ApiIgnore;
 
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ApiIgnore
+//@ApiIgnore
 public class ResponseDto<T> {
 
     private HttpStatus status = HttpStatus.OK;
     private String message;
     private T data;
 
-    @ApiIgnore
+    //@ApiIgnore
     public static <T> ResponseDto<T> SuccessResponse(T data, HttpStatus status) {
         return new ResponseDto<>(data, status );
     }

@@ -33,7 +33,7 @@ public class SwaggerConfig {
     @Bean
     public Docket commonApi(){
         return new Docket(DocumentationType.SWAGGER_2)
-                .ignoredParameterTypes(ResponseDto.class)
+                //.ignoredParameterTypes(ResponseDto.class)
                 .groupName("swg-group1")
                 .apiInfo(this.apiInfo())
                 .select()

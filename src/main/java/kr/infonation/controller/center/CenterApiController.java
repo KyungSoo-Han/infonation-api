@@ -48,4 +48,13 @@ public class CenterApiController {
         return ResponseDto.SuccessResponse(response, HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseDto<CenterDto.DeleteResponse> deleteCenter(@PathVariable Long id) throws CustomException {
+
+        centerService.deleteCenter(id);
+        CenterDto.DeleteResponse response = new CenterDto.DeleteResponse(id);
+
+        return ResponseDto.SuccessResponse(response, HttpStatus.OK);
+    }
+
 }

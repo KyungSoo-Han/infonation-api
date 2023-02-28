@@ -45,4 +45,12 @@ public class CenterService {
 
         return center;
     }
+
+    @Transactional
+    public void deleteCenter(Long id) throws CustomException {
+        repository.findById(id)
+                .orElseThrow(()-> new CustomException("존재하지 않는 센터입니다."));
+
+        repository.deleteById(id);
+    }
 }
