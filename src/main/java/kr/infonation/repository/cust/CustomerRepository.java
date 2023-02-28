@@ -1,0 +1,7 @@
+package kr.infonation.repository.cust;
+
+import kr.infonation.domain.cust.Customer;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CustomerRepository extends JpaRepository<Customer, Long> {
+}

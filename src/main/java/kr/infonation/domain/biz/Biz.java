@@ -30,6 +30,7 @@ public class Biz extends BaseEntity {
     private String ownerName;
     private String bizType;
     private String bizItem;
+    @Embedded
     private Address address;
 
     @Builder
