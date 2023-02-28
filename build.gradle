@@ -34,13 +34,26 @@ dependencies {
 	implementation 'org.projectlombok:lombok'
 	implementation 'org.springframework.boot:spring-boot-devtools'
 	implementation 'org.mariadb.jdbc:mariadb-java-client'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	/*
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+	*/
+	/*testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+	testImplementation 'org.hamcrest:hamcrest-library:2.2'
+	testImplementation 'org.mockito:mockito-core:3.11.2'
+	testImplementation 'org.mockito:mockito-junit-jupiter:3.11.2'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'*/
 
 	//swagger
 	implementation "io.springfox:springfox-boot-starter:3.0.0"
 	implementation "io.springfox:springfox-swagger-ui:3.0.0"
 
 	//querydsl 추가
-	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}" // querydsl 라이브러리
+	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+	// querydsl 라이브러리
 	annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}" //  Querydsl 관련 코드 생성 기능 제공
 
 	annotationProcessor 'org.projectlombok:lombok'
@@ -48,7 +61,10 @@ dependencies {
 	compileQuerydsl {
 		options.annotationProcessorPath = configurations.querydsl
 	}
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+}
+test {
+	useJUnitPlatform()
 }
 //querydsl 추가 시작 (위에 plugin 추가 부분과 맞물림)
 def querydslDir = "$buildDir/generated/querydsl"

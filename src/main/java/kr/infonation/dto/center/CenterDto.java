@@ -23,7 +23,7 @@ public class CenterDto {
     }
 
     @Data
-    @ApiModel("CreateRequest")
+    @ApiModel("CenterCreateRequest")
     public static class CreateRequest{
         private String name;
         private Address address;
@@ -39,7 +39,7 @@ public class CenterDto {
     }
 
     @Data
-    @ApiModel("CreateResponse")
+    @ApiModel("CenterCreateResponse")
     public static class CreateResponse {
         private Long id;
         private String name;
@@ -52,5 +52,30 @@ public class CenterDto {
             this.address = address;
             this.bizDto = bizDto;
         }
+    }
+
+    @Data
+    @ApiModel("CenterUpdateRequest")
+    public static class UpdateRequest {
+        private Long id;
+        private String name;
+        private Address address;
+        private Long bizId;
+
+    }
+    @Data
+    @ApiModel("CenterUpdateResponse")
+    public static class UpdateResponse {
+        private Long id;
+        private String name;
+        private Address address;
+        private BizDto.Response bizDto;
+        public UpdateResponse(Long id, String name, Address address, BizDto.Response bizDto) {
+            this.id = id;
+            this.name = name;
+            this.address = address;
+            this.bizDto = bizDto;
+        }
+
     }
 }

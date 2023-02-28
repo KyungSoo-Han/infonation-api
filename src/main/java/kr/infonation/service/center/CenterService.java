@@ -1,5 +1,6 @@
 package kr.infonation.service.center;
 
+import kr.infonation.config.CustomException;
 import kr.infonation.domain.biz.Biz;
 import kr.infonation.domain.center.Center;
 import kr.infonation.dto.center.CenterDto;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -30,6 +32,17 @@ public class CenterService {
     public Center createCenter(CenterDto.CreateRequest request){
         Biz biz = bizRepository.getReferenceById(request.getBizId());
         Center center = repository.save(request.toEntity(biz));
+        return center;
+    }
+    @Transactional
+    public Center updateCenter(CenterDto.UpdateRequest request, Long id) throws CustomException {
+
+        Center center = repository.findById(id)
+                .orElseThrow(() -> new CustomException("존재하지 않는 센터입니다."));
+        Biz biz = bizRepository.findById(request.getBizId()).orElseThrow(()-> new CustomException("잘못된 사업장코드입니다."));
+
+        center.update(request, biz);
+
         return center;
     }
 }
