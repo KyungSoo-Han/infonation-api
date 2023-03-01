@@ -6,6 +6,7 @@
 - Spring Framework
 - Spring Boot
 - Spring Data JPA
+- Spring Security (예정)
 - Query DSL
 - JPQL
 - MariaDB
@@ -14,7 +15,6 @@
 - Docker Hub (예정)
 - Jenkins (예정)
 - AWS (예정)
-- Spring Security (예정)
 
 
 ## 메뉴구성
