@@ -10,11 +10,11 @@
 - JPQL
 - MariaDB
 - Swagger
-- Docker
-- Docker Hub
-- Jenkins
-- AWS
-
+- Docker (예정)
+- Docker Hub (예정)
+- Jenkins (예정)
+- AWS (예정)
+- Spring Security (예정)
 
 
 ## 메뉴구성
