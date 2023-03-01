@@ -20,7 +20,7 @@ public class InboundReq extends BaseEntity {
     @Column(name = "inbound_no", unique = true, nullable = false)
     private String inboundNo;
 
-    private String inboundDt;
+    private String inboundDate;
 
     @JoinColumn(name = "biz_id")
     @ManyToOne(fetch = FetchType.LAZY)
