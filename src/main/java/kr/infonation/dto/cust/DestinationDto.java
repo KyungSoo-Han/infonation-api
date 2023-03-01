@@ -4,14 +4,14 @@ import io.swagger.annotations.ApiModel;
 import kr.infonation.domain.base.Address;
 import kr.infonation.domain.biz.Biz;
 import kr.infonation.domain.cust.Customer;
+import kr.infonation.domain.cust.Destination;
+import kr.infonation.dto.biz.BizDto;
 import lombok.Data;
 
-import javax.persistence.Embedded;
-
 @Data
-public class CustomerDto {
+public class DestinationDto {
     @Data
-    @ApiModel("CustomerResponse")
+    @ApiModel("DestinationResponse")
     public static class Response{
         private Long id;
         private String name;
@@ -27,28 +27,29 @@ public class CustomerDto {
         private String homepage;
         private boolean status;
 
-        public Response(Customer customer) {
-            this.id = customer.getId();
-            this.name = customer.getName();
-            this.engName = customer.getEngName();
-            this.address = customer.getAddress();
-            this.ownerName = customer.getOwnerName();
-            this.bizNo = customer.getBizNo();
-            this.bizType = customer.getBizType();
-            this.bizItem = customer.getBizItem();
-            this.email = customer.getEmail();
-            this.telNo = customer.getTelNo();
-            this.faxNo = customer.getFaxNo();
-            this.homepage = customer.getHomepage();
-            this.status = customer.isStatus();
+        public Response(Destination destination) {
+            this.id = destination.getId();
+            this.name = destination.getName();
+            this.engName = destination.getEngName();
+            this.address = destination.getAddress();
+            this.ownerName = destination.getOwnerName();
+            this.bizNo = destination.getBizNo();
+            this.bizType = destination.getBizType();
+            this.bizItem = destination.getBizItem();
+            this.email = destination.getEmail();
+            this.telNo = destination.getTelNo();
+            this.faxNo = destination.getFaxNo();
+            this.homepage = destination.getHomepage();
+            this.status = destination.isStatus();
         }
     }
     @Data
-    @ApiModel("CustomerCreateRequest")
+    @ApiModel("DestinationCreateRequest")
     public static class CreateRequest{
 
         private String name;
         private Long bizId;
+        private Long customerId;
         private String engName;
         private Address address;
         private String ownerName;
@@ -61,10 +62,11 @@ public class CustomerDto {
         private String homepage;
         private boolean status;
 
-        public Customer toEntity(Biz biz){
-            return Customer.builder()
+        public Destination toEntity(Biz biz, Customer customer){
+            return Destination.builder()
                     .name(name)
                     .biz(biz)
+                    .customer(customer)
                     .engName(engName)
                     .address(address)
                     .ownerName(ownerName)
@@ -81,7 +83,7 @@ public class CustomerDto {
     }
 
     @Data
-    @ApiModel("CustomerCreateResponse")
+    @ApiModel("DestinationCreateResponse")
     public static class CreateResponse{
         private Long id;
         private String name;
@@ -96,21 +98,25 @@ public class CustomerDto {
         private String faxNo;
         private String homepage;
         private boolean status;
+        private BizDto.Response bizDto;
+        private CustomerDto.Response customerDto;
 
-        public CreateResponse(Customer customer) {
-            this.id = customer.getId();
-            this.name = customer.getName();
-            this.engName = customer.getEngName();
-            this.address = customer.getAddress();
-            this.ownerName = customer.getOwnerName();
-            this.bizNo = customer.getBizNo();
-            this.bizType = customer.getBizType();
-            this.bizItem = customer.getBizItem();
-            this.email = customer.getEmail();
-            this.telNo = customer.getTelNo();
-            this.faxNo = customer.getFaxNo();
-            this.homepage = customer.getHomepage();
-            this.status = customer.isStatus();
+        public CreateResponse(Destination destination, BizDto.Response bizDto, CustomerDto.Response customerDto) {
+            this.id = destination.getId();
+            this.name = destination.getName();
+            this.engName = destination.getEngName();
+            this.address = destination.getAddress();
+            this.ownerName = destination.getOwnerName();
+            this.bizNo = destination.getBizNo();
+            this.bizType = destination.getBizType();
+            this.bizItem = destination.getBizItem();
+            this.email = destination.getEmail();
+            this.telNo = destination.getTelNo();
+            this.faxNo = destination.getFaxNo();
+            this.homepage = destination.getHomepage();
+            this.status = destination.isStatus();
+            this.bizDto = bizDto;
+            this.customerDto = customerDto;
         }
     }
 

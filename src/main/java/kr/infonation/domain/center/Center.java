@@ -19,10 +19,10 @@ public class Center extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "center_id")
     private Long id;
-    @Column(name = "center_name")
     private String name;
     @Embedded
     private Address address;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "biz_id")
     private Biz biz;

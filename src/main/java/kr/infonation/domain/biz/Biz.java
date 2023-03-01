@@ -22,9 +22,7 @@ public class Biz extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "biz_id")
     private Long id;
-    @Column(name = "biz_name")
     private String name;
-    @Column(name = "biz_ename")
     private String engName;
     private String bizNo;
     private String ownerName;

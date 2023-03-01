@@ -1,7 +1,10 @@
 package kr.infonation.domain.base;
 
+import lombok.Getter;
+
 import javax.persistence.Embeddable;
 
+@Getter
 @Embeddable
 public class ItemStandard {
     private int width;

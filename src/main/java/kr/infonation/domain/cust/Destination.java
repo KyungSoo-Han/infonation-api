@@ -8,23 +8,26 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.crypto.interfaces.PBEKey;
 import javax.persistence.*;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Customer extends BaseEntity {
+public class Destination extends BaseEntity {
 
-    @Column(name = "customer_id")
+    @Column(name = "destination_id")
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String name;
 
     @JoinColumn(name = "biz_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Biz biz;
 
-    private String name;
+    @JoinColumn(name = "customer_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Customer customer;
+
     private String engName;
     @Embedded
     private Address address;
@@ -39,11 +42,10 @@ public class Customer extends BaseEntity {
     private boolean status;
 
     @Builder
-    public Customer(String name,  Biz biz, String engName, Address address, String ownerName,
-                    String bizNo, String bizType, String bizItem, String email,
-                    String telNo, String faxNo, String homepage, boolean status) {
+    public Destination(String name, Biz biz, Customer customer, String engName, Address address, String ownerName, String bizNo, String bizType, String bizItem, String email, String telNo, String faxNo, String homepage, boolean status) {
         this.name = name;
         this.biz = biz;
+        this.customer = customer;
         this.engName = engName;
         this.address = address;
         this.ownerName = ownerName;

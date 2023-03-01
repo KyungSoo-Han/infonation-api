@@ -4,14 +4,14 @@ import io.swagger.annotations.ApiModel;
 import kr.infonation.domain.base.Address;
 import kr.infonation.domain.biz.Biz;
 import kr.infonation.domain.cust.Customer;
+import kr.infonation.domain.cust.Supplier;
+import kr.infonation.dto.biz.BizDto;
 import lombok.Data;
 
-import javax.persistence.Embedded;
-
 @Data
-public class CustomerDto {
+public class SupplierDto {
     @Data
-    @ApiModel("CustomerResponse")
+    @ApiModel("SupplierResponse")
     public static class Response{
         private Long id;
         private String name;
@@ -27,28 +27,29 @@ public class CustomerDto {
         private String homepage;
         private boolean status;
 
-        public Response(Customer customer) {
-            this.id = customer.getId();
-            this.name = customer.getName();
-            this.engName = customer.getEngName();
-            this.address = customer.getAddress();
-            this.ownerName = customer.getOwnerName();
-            this.bizNo = customer.getBizNo();
-            this.bizType = customer.getBizType();
-            this.bizItem = customer.getBizItem();
-            this.email = customer.getEmail();
-            this.telNo = customer.getTelNo();
-            this.faxNo = customer.getFaxNo();
-            this.homepage = customer.getHomepage();
-            this.status = customer.isStatus();
+        public Response(Supplier supplier) {
+            this.id = supplier.getId();
+            this.name = supplier.getName();
+            this.engName = supplier.getEngName();
+            this.address = supplier.getAddress();
+            this.ownerName = supplier.getOwnerName();
+            this.bizNo = supplier.getBizNo();
+            this.bizType = supplier.getBizType();
+            this.bizItem = supplier.getBizItem();
+            this.email = supplier.getEmail();
+            this.telNo = supplier.getTelNo();
+            this.faxNo = supplier.getFaxNo();
+            this.homepage = supplier.getHomepage();
+            this.status = supplier.isStatus();
         }
     }
     @Data
-    @ApiModel("CustomerCreateRequest")
+    @ApiModel("SupplierCreateRequest")
     public static class CreateRequest{
 
         private String name;
         private Long bizId;
+        private Long customerId;
         private String engName;
         private Address address;
         private String ownerName;
@@ -61,10 +62,11 @@ public class CustomerDto {
         private String homepage;
         private boolean status;
 
-        public Customer toEntity(Biz biz){
-            return Customer.builder()
+        public Supplier toEntity(Biz biz, Customer customer){
+            return Supplier.builder()
                     .name(name)
                     .biz(biz)
+                    .customer(customer)
                     .engName(engName)
                     .address(address)
                     .ownerName(ownerName)
@@ -81,7 +83,7 @@ public class CustomerDto {
     }
 
     @Data
-    @ApiModel("CustomerCreateResponse")
+    @ApiModel("SupplierCreateResponse")
     public static class CreateResponse{
         private Long id;
         private String name;
@@ -96,21 +98,25 @@ public class CustomerDto {
         private String faxNo;
         private String homepage;
         private boolean status;
+        private BizDto.Response bizDto;
+        private CustomerDto.Response customerDto;
 
-        public CreateResponse(Customer customer) {
-            this.id = customer.getId();
-            this.name = customer.getName();
-            this.engName = customer.getEngName();
-            this.address = customer.getAddress();
-            this.ownerName = customer.getOwnerName();
-            this.bizNo = customer.getBizNo();
-            this.bizType = customer.getBizType();
-            this.bizItem = customer.getBizItem();
-            this.email = customer.getEmail();
-            this.telNo = customer.getTelNo();
-            this.faxNo = customer.getFaxNo();
-            this.homepage = customer.getHomepage();
-            this.status = customer.isStatus();
+        public CreateResponse(Supplier supplier, BizDto.Response bizDto, CustomerDto.Response customerDto) {
+            this.id = supplier.getId();
+            this.name = supplier.getName();
+            this.engName = supplier.getEngName();
+            this.address = supplier.getAddress();
+            this.ownerName = supplier.getOwnerName();
+            this.bizNo = supplier.getBizNo();
+            this.bizType = supplier.getBizType();
+            this.bizItem = supplier.getBizItem();
+            this.email = supplier.getEmail();
+            this.telNo = supplier.getTelNo();
+            this.faxNo = supplier.getFaxNo();
+            this.homepage = supplier.getHomepage();
+            this.status = supplier.isStatus();
+            this.bizDto = bizDto;
+            this.customerDto = customerDto;
         }
     }
 

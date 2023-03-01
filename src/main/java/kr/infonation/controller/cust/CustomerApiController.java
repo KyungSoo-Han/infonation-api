@@ -1,6 +1,7 @@
 package kr.infonation.controller.cust;
 
 import kr.infonation.common.dto.ResponseDto;
+import kr.infonation.config.CustomException;
 import kr.infonation.domain.cust.Customer;
 import kr.infonation.dto.cust.CustomerDto;
 import kr.infonation.service.cust.CustomerService;
@@ -19,9 +20,12 @@ public class CustomerApiController {
     private final CustomerService customerService;
 
     @PostMapping
-    public ResponseDto<CustomerDto.CreateResponse> createCustomer(@RequestBody CustomerDto.CreateRequest request){
+    public ResponseDto<CustomerDto.CreateResponse> createCustomer(@RequestBody CustomerDto.CreateRequest request) throws CustomException {
+
         Customer customer = customerService.createCustomer(request);
+
         CustomerDto.CreateResponse response = new CustomerDto.CreateResponse(customer);
+
         return ResponseDto.SuccessResponse(response, HttpStatus.OK);
     }
 

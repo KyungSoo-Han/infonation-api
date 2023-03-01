@@ -17,12 +17,17 @@ import javax.persistence.*;
 @Entity
 public class Item {
 
+    @Column(name = "item_id")
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String unit;
+
+    @JoinColumn(name = "biz_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Biz biz;
+
+    @JoinColumn(name = "customer_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Customer customer;
 
