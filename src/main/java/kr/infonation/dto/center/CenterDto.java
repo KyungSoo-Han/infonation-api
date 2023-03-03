@@ -14,10 +14,10 @@ public class CenterDto {
 
     private String name;
     private Address address;
-    private Biz biz;
+    private BizDto.Response biz;
 
     @QueryProjection
-    public CenterDto(String name, Address address, Biz biz) {
+    public CenterDto(String name, Address address, BizDto.Response biz) {
         this.name = name;
         this.address = address;
         this.biz = biz;
@@ -87,4 +87,5 @@ public class CenterDto {
         private final Long id;
 
     }
+
 }
