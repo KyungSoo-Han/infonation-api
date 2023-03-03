@@ -6,6 +6,7 @@ import kr.infonation.domain.center.Center;
 import kr.infonation.domain.cust.Customer;
 import kr.infonation.domain.cust.Supplier;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -14,7 +15,7 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-public class InboundReq extends BaseEntity {
+public class Inbound extends BaseEntity {
 
     @Id
     @Column(name = "inbound_no", unique = true, nullable = false)
@@ -43,5 +44,15 @@ public class InboundReq extends BaseEntity {
 
     private String remark;
 
-
+    @Builder
+    public Inbound(String inboundNo, String inboundDate, Biz biz, Center center, Customer customer, Supplier supplier, InboundGbn inBoundGbn, String remark) {
+        this.inboundNo = inboundNo;
+        this.inboundDate = inboundDate;
+        this.biz = biz;
+        this.center = center;
+        this.customer = customer;
+        this.supplier = supplier;
+        this.inBoundGbn = inBoundGbn;
+        this.remark = remark;
+    }
 }
