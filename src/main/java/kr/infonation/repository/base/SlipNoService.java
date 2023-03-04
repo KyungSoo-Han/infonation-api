@@ -4,17 +4,22 @@ import kr.infonation.config.CustomException;
 import kr.infonation.domain.base.SlipNo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @RequiredArgsConstructor
-@Repository
-public class SlipNoRepository {
+@Service
+public class SlipNoService {
     @PersistenceContext
     private final EntityManager em;
+/*
 
     @Transactional
     public String getSlipNo(String slipGbn, String slipDate) throws CustomException {
@@ -54,6 +59,40 @@ public class SlipNoRepository {
 
         slipNo = rtnData.getSlipGbn() + rtnData.getSlipDate() + String.format("%05d", rtnData.getCount());
         return slipNo;
+    }
+*/
+    private final Map<String, SlipNo> slipNoCache = new ConcurrentHashMap<>();
+
+    @Transactional
+    public String generateSlipNo(String slipGbn, String slipDate) throws CustomException {
+        if (slipDate == null) {
+            throw new CustomException("전표번호 생성중 날짜 타입이 바르지 않습니다.");
+        }
+
+        SlipNo slipNo = slipNoCache.computeIfAbsent(slipGbn + slipDate, key -> {
+            List<SlipNo> result = em.createQuery("select s " +
+                            "from SlipNo s " +
+                            "where s.slipGbn = :slipGbn " +
+                            "and s.slipDate = :slipDate  ", SlipNo.class)
+                    .setParameter("slipGbn", slipGbn)
+                    .setParameter("slipDate", slipDate)
+                    .setLockMode(LockModeType.PESSIMISTIC_WRITE) // SELECT ... FOR UPDATE
+                    .getResultList();
+
+            if (result.isEmpty()) {
+                return new SlipNo(slipGbn, slipDate, 1);
+            } else {
+                SlipNo existingSlipNo = result.get(0);
+                existingSlipNo.updateCount();
+                return existingSlipNo;
+            }
+        });
+
+        em.persist(slipNo);
+        em.flush();
+
+        String slipNoStr = slipNo.getSlipGbn() + slipNo.getSlipDate() + String.format("%05d", slipNo.getCount());
+        return slipNoStr;
     }
 
 }

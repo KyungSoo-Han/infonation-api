@@ -16,7 +16,7 @@ import javax.transaction.Transactional;
 class SlipNoRepositoryTest {
 
     @Autowired
-    SlipNoRepository slipNoRepository;
+    SlipNoService slipNoRepository;
 
     @PersistenceContext
     EntityManager entityManager;
@@ -28,7 +28,7 @@ class SlipNoRepositoryTest {
 
     @Test
     void getSlipNo() throws CustomException {
-        String slipNo = slipNoRepository.getSlipNo("I", "20230304");
+        String slipNo = slipNoRepository.generateSlipNo("I", "20230304");
         System.out.println("slipNo = " + slipNo);
     }
 }

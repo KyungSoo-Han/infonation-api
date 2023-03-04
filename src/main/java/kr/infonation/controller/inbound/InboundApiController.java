@@ -35,33 +35,9 @@ public class InboundApiController {
     private final InboundService inboundService;
 
     @PostMapping
-    public ResponseDto<InboundDto.CreateResponse> createInbound (@RequestBody List<InboundDto.CreateRequest> request) throws Exception {
+    public ResponseDto<InboundDto.CreateResponse> createInbound (@RequestBody InboundDto.CreateRequest request) throws Exception {
 
-        Map<String, Object> responseMap = inboundService.createInboundAndItem(request);
-
-        Inbound inbound = (Inbound) responseMap.get("Inbound");
-        List<InboundItem> inboundItem = (List<InboundItem>) responseMap.get("InboundItem");
-
-        BizDto.Response bizDto = new BizDto.Response((Biz) responseMap.get("Biz"));
-        CenterDto centerDto = new CenterDto(
-                ((Center) responseMap.get("Center")).getName(),
-                ((Center) responseMap.get("Center")).getAddress(),
-                bizDto
-        );
-        CustomerDto.Response customerDto = new CustomerDto.Response((Customer) responseMap.get("Customer"));
-        SupplierDto.Response supplierDto = new SupplierDto.Response((Supplier) responseMap.get("Supplier"));
-
-        Stream<InboundDto.ItemCreateResponse> itemCreateResponseStream =
-                inboundItem.stream().map(m -> new InboundDto.ItemCreateResponse(m, new ItemDto.Response(m.getItem())));
-
-        InboundDto.CreateResponse response = new InboundDto.CreateResponse(
-                inbound,
-                bizDto,
-                centerDto,
-                customerDto,
-                supplierDto,
-                itemCreateResponseStream.collect(Collectors.toList())
-        );
+        InboundDto.CreateResponse response = inboundService.createInboundAndItem(request);
 
         return ResponseDto.SuccessResponse(response, HttpStatus.OK);
     }

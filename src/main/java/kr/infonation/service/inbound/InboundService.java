@@ -1,6 +1,5 @@
 package kr.infonation.service.inbound;
 
-import kr.infonation.config.CustomException;
 import kr.infonation.domain.biz.Biz;
 import kr.infonation.domain.center.Center;
 import kr.infonation.domain.cust.Customer;
@@ -9,7 +8,7 @@ import kr.infonation.domain.inbound.Inbound;
 import kr.infonation.domain.inbound.InboundItem;
 import kr.infonation.domain.item.Item;
 import kr.infonation.dto.inbound.InboundDto;
-import kr.infonation.repository.base.SlipNoRepository;
+import kr.infonation.repository.base.SlipNoService;
 import kr.infonation.repository.biz.BizRepository;
 import kr.infonation.repository.center.CenterRepository;
 import kr.infonation.repository.cust.CustomerRepository;
@@ -26,6 +25,8 @@ import javax.persistence.EntityNotFoundException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -37,12 +38,12 @@ public class InboundService {
     private final CenterRepository centerRepository;
     private final CustomerRepository customerRepository;
     private final SupplierRepository supplierRepository;
-    private final SlipNoRepository slipNoRepository;
+    private final SlipNoService slipNoService;
     private final ItemRepository itemRepository;
 
 
     @Transactional
-    public Map<String, Object> createInboundAndItem(List<InboundDto.CreateRequest> request) throws Exception {
+    public InboundDto.CreateResponse createInboundAndItem(InboundDto.CreateRequest request) throws Exception {
 
         /*
         Biz biz = bizRepository.findById(request.getBizId())
@@ -57,26 +58,47 @@ public class InboundService {
                 .orElseThrow(() -> new EntityNotFoundException("품목을 찾을 수 없습니다."));
         */
 
-        Biz biz = findByIdOrThrow(bizRepository, request.get(0).getBizId(), "사업장을 찾을 수 없습니다.");
-        Center center = findByIdOrThrow(centerRepository, request.get(0).getCenterId(), "센터를 찾을 수 없습니다.");
-        Customer customer = findByIdOrThrow(customerRepository, request.get(0).getCustomerId(), "화주사를 찾을 수 없습니다.");
-        Supplier supplier = findByIdOrThrow(supplierRepository, request.get(0).getSupplierId(), "공급사를 찾을 수 없습니다.");
+        Biz biz = findByIdOrThrow(bizRepository, request.getBizId(), "사업장을 찾을 수 없습니다.");
+        Center center = findByIdOrThrow(centerRepository, request.getCenterId(), "센터를 찾을 수 없습니다.");
+        Customer customer = findByIdOrThrow(customerRepository, request.getCustomerId(), "화주사를 찾을 수 없습니다.");
+        Supplier supplier = findByIdOrThrow(supplierRepository, request.getSupplierId(), "공급사를 찾을 수 없습니다.");
 
-        String slipNo = slipNoRepository.getSlipNo("I", request.get(0).getInboundDate());
+        /**
+         * 전표번호 생성
+         */
+        String slipNo = slipNoService.generateSlipNo("I", request.getInboundDate());
 
-        Inbound inbound = inboundRepository.save(request.get(0).toEntity(slipNo, biz, center, customer, supplier));
+        Inbound inbound = inboundRepository.save(request.toEntity(slipNo, biz, center, customer, supplier));
 
-        for (InboundDto.CreateRequest req : request) {
+        for (InboundDto.ItemCreateRequest req : request.getItemCreateRequest()) {
 
             Item item = findByIdOrThrow(itemRepository, req.getItemId(), "품목을 찾을 수 없습니다.");
 
             InboundItem inboundItem = inboundItemRepository.save(
-                    req.toItemEntity(inbound, item, req.getQty(), req.getPrice(), req.getExpDate(),
+                    req.toEntity(inbound, item, req.getQty(), req.getPrice(), req.getExpDate(),
                             req.getMakeLotNo(), req.getMakeDate(), req.getSubRemark()));
 
             inbound.addInboundItem(inboundItem);
         }
 
+        List<InboundItem> inboundItemList = inbound.getInboundItemList();
+        Stream<InboundDto.ItemCreateResponse> itemCreateResponseStream =
+                inboundItemList.stream().map(m -> new InboundDto.ItemCreateResponse(m, m.getItem().getId(), m.getItem().getName()));
+
+        InboundDto.CreateResponse response = new InboundDto.CreateResponse(
+                inbound,
+                biz.getId(),
+                biz.getName(),
+                center.getId(),
+                center.getName(),
+                customer.getId(),
+                customer.getName(),
+                supplier.getId(),
+                supplier.getName(),
+                itemCreateResponseStream.collect(Collectors.toList())
+        );
+
+        /*
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put("Biz", biz);
         rtnMap.put("Center", center);
@@ -84,12 +106,14 @@ public class InboundService {
         rtnMap.put("Supplier", supplier);
         rtnMap.put("Inbound", inbound);
         rtnMap.put("InboundItem", inbound.getInboundItemList());
+        */
 
-        return rtnMap;
+        return response;
     }
 
     // findByIdOrThrow 메서드
-    private <T> T findByIdOrThrow(CrudRepository<T, Long> repository, Long id, String errorMessage) throws EntityNotFoundException {
+    private <T> T findByIdOrThrow(CrudRepository<T, Long> repository, Long id, String errorMessage)
+                                                                            throws EntityNotFoundException {
         return repository.findById(id).orElseThrow(() -> new EntityNotFoundException(errorMessage));
     }
 
