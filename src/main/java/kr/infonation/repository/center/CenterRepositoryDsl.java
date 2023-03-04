@@ -1,6 +1,7 @@
 package kr.infonation.repository.center;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import kr.infonation.dto.biz.BizDto;
 import kr.infonation.dto.center.CenterDto;
 import kr.infonation.dto.center.QCenterDto;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +18,9 @@ public class CenterRepositoryDsl {
     private final JPAQueryFactory queryFactory;
 
     public List<CenterDto> findCenter(){
+
        List<CenterDto> centerdto = queryFactory
-               .select(new QCenterDto( center.name, center.address, center.biz))
+               .select(new QCenterDto( center.name, center.address, null))
                 .from(center)
                 .leftJoin(center.biz, biz)
                 .fetch();

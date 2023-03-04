@@ -1,13 +1,11 @@
 package kr.infonation.dto.biz;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import kr.infonation.domain.base.Address;
 import kr.infonation.domain.biz.Biz;
+import kr.infonation.domain.biz.QBiz;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import springfox.documentation.annotations.ApiIgnore;
 
 public class BizDto {
     @Data

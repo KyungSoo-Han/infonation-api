@@ -17,6 +17,53 @@ import javax.persistence.*;
 public class ItemDto {
 
     @Data
+    @ApiModel("ItemResponse")
+    public static class Response {
+        private Long id;
+        private String name;
+        private String unit;
+        private String sname;
+        private boolean status;
+        private boolean isSet;
+        private int caseEaQty;
+        private int boxEaQty;
+        private int palletEaQty;
+        private int safeStockQty;
+        private ItemStandard itemStandard;
+        private ItemStandard caseStandard;
+        private ItemStandard boxStandard;
+        private ItemStandard palletStandard;
+        private int nearExpDay;
+        private int nonDeliverDay;
+        private boolean isMakeDay;
+        private int fromMakeDay;
+        private String location;
+        private String description;
+
+        public Response(Item item) {
+            this.id = item.getId();
+            this.name = item.getName();
+            this.unit = item.getUnit();
+            this.sname = item.getSname();
+            this.status = item.isStatus();
+            this.isSet = item.isSet();
+            this.caseEaQty = item.getCaseEaQty();
+            this.boxEaQty = item.getBoxEaQty();
+            this.palletEaQty = item.getPalletEaQty();
+            this.safeStockQty = item.getSafeStockQty();
+            this.itemStandard = item.getItemStandard();
+            this.caseStandard = item.getCaseStandard();
+            this.boxStandard = item.getBoxStandard();
+            this.palletStandard = item.getPalletStandard();
+            this.nearExpDay = item.getNearExpDay();
+            this.nonDeliverDay = item.getNonDeliverDay();
+            this.isMakeDay = item.isMakeDay();
+            this.fromMakeDay = item.getFromMakeDay();
+            this.location = item.getLocation();
+            this.description = item.getDescription();
+        }
+    }
+    @Data
     @ApiModel("ItemCreateRequest")
     public static class CreateRequest{
         private String name;
@@ -120,4 +167,5 @@ public class ItemDto {
             this.description = item.getDescription();
         }
     }
+
 }

@@ -45,7 +45,8 @@ public class Inbound extends BaseEntity {
     private String remark;
 
     @Builder
-    public Inbound(String inboundNo, String inboundDate, Biz biz, Center center, Customer customer, Supplier supplier, InboundGbn inBoundGbn, String remark) {
+    public Inbound(String inboundNo, String inboundDate, Biz biz, Center center,
+                                Customer customer, Supplier supplier, InboundGbn inBoundGbn, String remark) {
         this.inboundNo = inboundNo;
         this.inboundDate = inboundDate;
         this.biz = biz;

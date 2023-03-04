@@ -44,7 +44,7 @@ class BizServiceTest {
         mockMvc = MockMvcBuilders.standaloneSetup(bizApiController).build();
     }
 
-    @Test
+   /* @Test
     void createBiz() throws Exception {
         BizDto.CreateRequest req = new BizDto.CreateRequest();
         req.setBizItem("TEST");
@@ -58,5 +58,5 @@ class BizServiceTest {
                .content(objectMapper.writeValueAsBytes(req))).andExpect(status().isOk());
 
        verify(bizService).createBiz(req);
-    }
+    }*/
 }

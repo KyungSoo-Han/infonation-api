@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.persistence.EntityNotFoundException;
+
 @RestControllerAdvice(annotations = {RestController.class, Service.class})
 public class ControllerAdvisor {
     private static final Logger logger = LoggerFactory.getLogger(ControllerAdvisor.class);
@@ -32,5 +34,11 @@ public class ControllerAdvisor {
         logger.error("error", e);
 
         return ExceptionResponseDto.ExceptionResponse(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    protected ExceptionResponseDto entityNotFoundException(final Exception e){
+        logger.error("error", e);
+        return ExceptionResponseDto.ExceptionResponse(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }

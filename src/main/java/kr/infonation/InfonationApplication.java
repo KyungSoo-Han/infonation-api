@@ -15,6 +15,7 @@ public class InfonationApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(InfonationApplication.class, args);
 	}
+
 	@Bean
 	JPAQueryFactory jpaQueryFactory(EntityManager em) {
 		return new JPAQueryFactory(em);
