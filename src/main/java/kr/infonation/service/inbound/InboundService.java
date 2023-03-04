@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -41,7 +42,7 @@ public class InboundService {
 
 
     @Transactional
-    public Map<String, Object> createInboundAndItem(InboundDto.CreateRequest request) throws Exception {
+    public Map<String, Object> createInboundAndItem(List<InboundDto.CreateRequest> request) throws Exception {
 
         /*
         Biz biz = bizRepository.findById(request.getBizId())
@@ -56,18 +57,25 @@ public class InboundService {
                 .orElseThrow(() -> new EntityNotFoundException("품목을 찾을 수 없습니다."));
         */
 
-        Biz biz = findByIdOrThrow(bizRepository, request.getBizId(), "사업장을 찾을 수 없습니다.");
-        Center center = findByIdOrThrow(centerRepository, request.getCenterId(), "센터를 찾을 수 없습니다.");
-        Customer customer = findByIdOrThrow(customerRepository, request.getCustomerId(), "화주사를 찾을 수 없습니다.");
-        Supplier supplier = findByIdOrThrow(supplierRepository, request.getSupplierId(), "공급사를 찾을 수 없습니다.");
-        Item item = findByIdOrThrow(itemRepository, request.getItemId(), "품목을 찾을 수 없습니다.");
+        Biz biz = findByIdOrThrow(bizRepository, request.get(0).getBizId(), "사업장을 찾을 수 없습니다.");
+        Center center = findByIdOrThrow(centerRepository, request.get(0).getCenterId(), "센터를 찾을 수 없습니다.");
+        Customer customer = findByIdOrThrow(customerRepository, request.get(0).getCustomerId(), "화주사를 찾을 수 없습니다.");
+        Supplier supplier = findByIdOrThrow(supplierRepository, request.get(0).getSupplierId(), "공급사를 찾을 수 없습니다.");
 
-        String slipNo = slipNoRepository.getSlipNo("I", request.getInboundDate());
+        String slipNo = slipNoRepository.getSlipNo("I", request.get(0).getInboundDate());
 
-        Inbound inbound = inboundRepository.save(request.toEntity(slipNo, biz, center, customer, supplier));
-        InboundItem inboundItem = inboundItemRepository.save(
-                                                            request.toItemEntity(inbound, item, request.getQty(), request.getPrice(), request.getExpDate(),
-                                                                                request.getMakeLotNo(), request.getMakeDate(), request.getSubRemark()));
+        Inbound inbound = inboundRepository.save(request.get(0).toEntity(slipNo, biz, center, customer, supplier));
+
+        for (InboundDto.CreateRequest req : request) {
+
+            Item item = findByIdOrThrow(itemRepository, req.getItemId(), "품목을 찾을 수 없습니다.");
+
+            InboundItem inboundItem = inboundItemRepository.save(
+                    req.toItemEntity(inbound, item, req.getQty(), req.getPrice(), req.getExpDate(),
+                            req.getMakeLotNo(), req.getMakeDate(), req.getSubRemark()));
+
+            inbound.addInboundItem(inboundItem);
+        }
 
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put("Biz", biz);
@@ -75,11 +83,11 @@ public class InboundService {
         rtnMap.put("Customer", customer);
         rtnMap.put("Supplier", supplier);
         rtnMap.put("Inbound", inbound);
-        rtnMap.put("InboundItem", inboundItem);
+        rtnMap.put("InboundItem", inbound.getInboundItemList());
 
         return rtnMap;
     }
-    
+
     // findByIdOrThrow 메서드
     private <T> T findByIdOrThrow(CrudRepository<T, Long> repository, Long id, String errorMessage) throws EntityNotFoundException {
         return repository.findById(id).orElseThrow(() -> new EntityNotFoundException(errorMessage));

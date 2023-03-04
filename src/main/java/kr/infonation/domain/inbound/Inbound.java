@@ -11,6 +11,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -43,6 +45,14 @@ public class Inbound extends BaseEntity {
     private InboundGbn inBoundGbn;
 
     private String remark;
+
+    @OneToMany(mappedBy = "inbound", cascade = CascadeType.ALL)
+    private List<InboundItem> inboundItemList= new ArrayList<>();
+
+    public void addInboundItem(InboundItem inboundItem) {
+        inboundItemList.add(inboundItem);
+        inboundItem.setInbound(this);
+    }
 
     @Builder
     public Inbound(String inboundNo, String inboundDate, Biz biz, Center center,

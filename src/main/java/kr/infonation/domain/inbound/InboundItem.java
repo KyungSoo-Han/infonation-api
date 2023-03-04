@@ -19,7 +19,7 @@ public class InboundItem extends BaseEntity{
     */
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "inbound_seq")
-    private int inboundSeq;
+    private Long inboundSeq;
 
     @JoinColumn(name = "inbound_no")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -37,6 +37,10 @@ public class InboundItem extends BaseEntity{
     private String expDate;
     private String subRemark;
     private boolean status;
+
+    public void setInbound(Inbound inbound) {
+        this.inbound = inbound;
+    }
 
     @Builder
     public InboundItem(Inbound inbound, Item item, int qty, int price,

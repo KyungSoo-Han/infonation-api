@@ -1,5 +1,6 @@
 package kr.infonation.dto.inbound;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModel;
 import kr.infonation.domain.biz.Biz;
 import kr.infonation.domain.center.Center;
@@ -16,11 +17,13 @@ import kr.infonation.dto.cust.SupplierDto;
 import kr.infonation.dto.item.ItemDto;
 import lombok.Data;
 
+import java.util.List;
+
 public class InboundDto {
 
     @Data
     @ApiModel("InboundCreateRequest")
-    public static class CreateRequest{
+    public static class CreateRequest {
 
         private Long bizId;
         private Long centerId;
@@ -40,7 +43,7 @@ public class InboundDto {
         private String makeDate;
 
 
-        public Inbound toEntity(String inboundNo, Biz biz, Center center, Customer customer, Supplier supplier){
+        public Inbound toEntity(String inboundNo, Biz biz, Center center, Customer customer, Supplier supplier) {
             Inbound inbound = Inbound.builder()
                     .biz(biz)
                     .center(center)
@@ -54,7 +57,7 @@ public class InboundDto {
             return inbound;
         }
 
-        public InboundItem toItemEntity(Inbound inbound, Item item,  int qty,int price, String expDate, String makeLotNo, String makeDate, String subRemark ){
+        public InboundItem toItemEntity(Inbound inbound, Item item, int qty, int price, String expDate, String makeLotNo, String makeDate, String subRemark) {
             InboundItem inboundItem = InboundItem.builder()
                     .inbound(inbound)
                     .item(item)
@@ -71,7 +74,7 @@ public class InboundDto {
 
     @Data
     @ApiModel("InboundCreateResponse")
-    public static class CreateResponse{
+    public static class CreateResponse {
         private BizDto.Response bizDto;
         private CenterDto centerDto;
         private CustomerDto.Response customerDto;
@@ -80,7 +83,25 @@ public class InboundDto {
         private String inboundDate;
         private String inboundNo;
         private InboundGbn inboundGbn;
+        private List<ItemCreateResponse> itemCreateResponses ;
+        public CreateResponse(Inbound inbound, BizDto.Response bizDto, CenterDto centerDto, CustomerDto.Response customerDto,
+                              SupplierDto.Response supplierDto,List<ItemCreateResponse> itemCreateResponses) {
+            this.bizDto = bizDto;
+            this.centerDto = centerDto;
+            this.customerDto = customerDto;
+            this.supplierDto = supplierDto;
+            this.remark = inbound.getRemark();
+            this.inboundDate = inbound.getInboundDate();
+            this.inboundNo = inbound.getInboundNo();
+            this.inboundGbn = inbound.getInBoundGbn();
+            this.itemCreateResponses = itemCreateResponses;
 
+        }
+    }
+
+    @Data
+    @ApiModel("InboundItemCreateResponse")
+    public static class ItemCreateResponse{
 
         private ItemDto.Response itemDto ;
         private int qty;
@@ -91,17 +112,7 @@ public class InboundDto {
         private String makeLotNo;
         private String makeDate;
 
-
-        public CreateResponse(Inbound inbound, InboundItem inboundItem, BizDto.Response bizDto, CenterDto centerDto, CustomerDto.Response customerDto,
-                              SupplierDto.Response supplierDto, ItemDto.Response itemDto) {
-            this.bizDto = bizDto;
-            this.centerDto = centerDto;
-            this.customerDto = customerDto;
-            this.supplierDto = supplierDto;
-            this.remark = inbound.getRemark();
-            this.inboundDate = inbound.getInboundDate();
-            this.inboundNo = inbound.getInboundNo();
-            this.inboundGbn = inbound.getInBoundGbn();
+        public ItemCreateResponse(InboundItem inboundItem, ItemDto.Response itemDto) {
 
             this.itemDto = itemDto;
             this.qty = inboundItem.getQty();

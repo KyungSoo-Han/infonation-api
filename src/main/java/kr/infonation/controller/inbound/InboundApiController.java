@@ -23,7 +23,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @RestController
@@ -32,51 +35,32 @@ public class InboundApiController {
     private final InboundService inboundService;
 
     @PostMapping
-    public ResponseDto<InboundDto.CreateResponse> createInbound (@RequestBody InboundDto.CreateRequest request) throws Exception {
+    public ResponseDto<InboundDto.CreateResponse> createInbound (@RequestBody List<InboundDto.CreateRequest> request) throws Exception {
 
-        /*Map<String, Object> objectMap = inboundService.createInboundAndItem(request);
+        Map<String, Object> responseMap = inboundService.createInboundAndItem(request);
 
-        Biz biz  = (Biz) objectMap.get("Biz");
-        Center center  = (Center) objectMap.get("Center");
-        Customer customer  = (Customer) objectMap.get("Customer");
-        Supplier supplier  = (Supplier) objectMap.get("Supplier");
-        Item item  = (Item) objectMap.get("Item");
-        Inbound inbound  = (Inbound) objectMap.get("Inbound");
-        InboundItem inboundItem  = (InboundItem) objectMap.get("InboundItem");
+        Inbound inbound = (Inbound) responseMap.get("Inbound");
+        List<InboundItem> inboundItem = (List<InboundItem>) responseMap.get("InboundItem");
 
-        BizDto.Response bizDto = new BizDto.Response(biz);
-        CenterDto centerDto = new CenterDto(center.getName(),center.getAddress(), bizDto);
-        CustomerDto.Response customerDto = new CustomerDto.Response(customer);
-        SupplierDto.Response supplierDto = new SupplierDto.Response(supplier);
-        ItemDto.Response itemDto = new ItemDto.Response(item);
-
-        InboundDto.CreateResponse response = new InboundDto.CreateResponse(inbound, inboundItem, bizDto, centerDto, customerDto, supplierDto, itemDto);
-
-        return ResponseDto.SuccessResponse(response, HttpStatus.OK);*/
-
-        Map<String, Object> objectMap = inboundService.createInboundAndItem(request);
-
-        Inbound inbound = (Inbound) objectMap.get("Inbound");
-        InboundItem inboundItem = (InboundItem) objectMap.get("InboundItem");
-
-        BizDto.Response bizDto = new BizDto.Response((Biz) objectMap.get("Biz"));
+        BizDto.Response bizDto = new BizDto.Response((Biz) responseMap.get("Biz"));
         CenterDto centerDto = new CenterDto(
-                ((Center) objectMap.get("Center")).getName(),
-                ((Center) objectMap.get("Center")).getAddress(),
+                ((Center) responseMap.get("Center")).getName(),
+                ((Center) responseMap.get("Center")).getAddress(),
                 bizDto
         );
-        CustomerDto.Response customerDto = new CustomerDto.Response((Customer) objectMap.get("Customer"));
-        SupplierDto.Response supplierDto = new SupplierDto.Response((Supplier) objectMap.get("Supplier"));
-        ItemDto.Response itemDto = new ItemDto.Response((Item) objectMap.get("Item"));
+        CustomerDto.Response customerDto = new CustomerDto.Response((Customer) responseMap.get("Customer"));
+        SupplierDto.Response supplierDto = new SupplierDto.Response((Supplier) responseMap.get("Supplier"));
+
+        Stream<InboundDto.ItemCreateResponse> itemCreateResponseStream =
+                inboundItem.stream().map(m -> new InboundDto.ItemCreateResponse(m, new ItemDto.Response(m.getItem())));
 
         InboundDto.CreateResponse response = new InboundDto.CreateResponse(
                 inbound,
-                inboundItem,
                 bizDto,
                 centerDto,
                 customerDto,
                 supplierDto,
-                itemDto
+                itemCreateResponseStream.collect(Collectors.toList())
         );
 
         return ResponseDto.SuccessResponse(response, HttpStatus.OK);
