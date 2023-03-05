@@ -11,16 +11,22 @@ import lombok.Data;
 
 @Data
 public class CenterDto {
-
-    private String name;
-    private Address address;
-    private BizDto.Response biz;
-
+    private Long bizId;
+    private String bizName;
+    private Long centerId;
+    private String centerName;
+    private String zipNo;
+    private String zipAddr1;
+    private String zipAddr2;
     @QueryProjection
-    public CenterDto(String name, Address address, BizDto.Response biz) {
-        this.name = name;
-        this.address = address;
-        this.biz = biz;
+    public CenterDto(Long centerId, String centerName, Address address, Long bizId, String bizName) {
+        this.centerId = centerId;
+        this.centerName = centerName;
+        this.zipNo = address.getZipNo();
+        this.zipAddr1 = address.getZipAddr1();
+        this.zipAddr2=address.getZipAddr2();
+        this.bizId = bizId;
+        this.bizName = bizName;
     }
 
     @Data

@@ -20,7 +20,7 @@ public class CenterRepositoryDsl {
     public List<CenterDto> findCenter(){
 
        List<CenterDto> centerdto = queryFactory
-               .select(new QCenterDto( center.name, center.address, null))
+               .select(new QCenterDto( center.id, center.name, center.address, center.biz.id, center.biz.name))
                 .from(center)
                 .leftJoin(center.biz, biz)
                 .fetch();

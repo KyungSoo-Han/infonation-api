@@ -5,6 +5,7 @@ import kr.infonation.domain.base.Address;
 import kr.infonation.domain.biz.Biz;
 import kr.infonation.domain.cust.Customer;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.Embedded;
 
@@ -44,6 +45,7 @@ public class CustomerDto {
         }
     }
     @Data
+    @ToString
     @ApiModel("CustomerCreateRequest")
     public static class CreateRequest{
 
