@@ -14,7 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -43,5 +45,12 @@ public class DestinationService {
 
         return rtnObj;
     }
-    
+
+    public List<DestinationDto.Response> findDestination(Long bizId, Long customerId) {
+        List<Destination> destination = destinationRepository.findDestination(bizId, customerId);
+        List<DestinationDto.Response> responseList = destination
+                                                        .stream()
+                                                        .map(d -> new DestinationDto.Response(d)).collect(Collectors.toList());
+        return responseList;
+    }
 }

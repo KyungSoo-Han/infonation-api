@@ -11,11 +11,9 @@ import kr.infonation.dto.cust.DestinationDto;
 import kr.infonation.service.cust.DestinationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -24,6 +22,14 @@ import java.util.Map;
 public class DestinationApiController {
 
     private final DestinationService destinationService;
+
+    @GetMapping
+    public ResponseDto<List<DestinationDto.Response>> findDestination(@RequestParam Long bizId, @RequestParam Long customerId){
+
+        List<DestinationDto.Response> responses = destinationService.findDestination(bizId, customerId);
+
+        return ResponseDto.SuccessResponse(responses, HttpStatus.OK);
+    }
 
     @PostMapping
     public ResponseDto<DestinationDto.CreateResponse> createDestination
