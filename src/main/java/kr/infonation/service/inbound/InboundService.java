@@ -57,7 +57,7 @@ public class InboundService {
         Item item = itemRepository.findById(request.getItemId())
                 .orElseThrow(() -> new EntityNotFoundException("품목을 찾을 수 없습니다."));
         */
-
+        System.out.println("request = " + request);
         Biz biz = findByIdOrThrow(bizRepository, request.getBizId(), "사업장을 찾을 수 없습니다.");
         Center center = findByIdOrThrow(centerRepository, request.getCenterId(), "센터를 찾을 수 없습니다.");
         Customer customer = findByIdOrThrow(customerRepository, request.getCustomerId(), "화주사를 찾을 수 없습니다.");
@@ -66,7 +66,7 @@ public class InboundService {
         /**
          * 전표번호 생성
          */
-        String slipNo = slipNoService.generateSlipNo("I", request.getInboundDate());
+        String slipNo = slipNoService.generateSlipNo("I", request.getInboundDate().replace("-",""));
 
         Inbound inbound = inboundRepository.save(request.toEntity(slipNo, biz, center, customer, supplier));
 
