@@ -8,12 +8,14 @@ import kr.infonation.domain.inbound.Inbound;
 import kr.infonation.domain.inbound.InboundItem;
 import kr.infonation.domain.item.Item;
 import kr.infonation.dto.inbound.InboundDto;
+import kr.infonation.dto.inbound.InboundQueryDto;
 import kr.infonation.repository.base.SlipNoService;
 import kr.infonation.repository.biz.BizRepository;
 import kr.infonation.repository.center.CenterRepository;
 import kr.infonation.repository.cust.CustomerRepository;
 import kr.infonation.repository.cust.SupplierRepository;
 import kr.infonation.repository.inbound.InboundItemRepository;
+import kr.infonation.repository.inbound.InboundQueryRepository;
 import kr.infonation.repository.inbound.InboundRepository;
 import kr.infonation.repository.item.ItemRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,9 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -40,8 +40,13 @@ public class InboundService {
     private final SupplierRepository supplierRepository;
     private final SlipNoService slipNoService;
     private final ItemRepository itemRepository;
+    private final InboundQueryRepository inboundQueryRepository;
 
 
+    public List<InboundQueryDto> findInbound(String inboundNo) {
+       return inboundQueryRepository.findInbound(inboundNo);
+
+    }
     @Transactional
     public InboundDto.CreateResponse createInboundAndItem(InboundDto.CreateRequest request) throws Exception {
 
