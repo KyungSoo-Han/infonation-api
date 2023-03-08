@@ -1,7 +1,7 @@
 # WMS API 프로젝트
 -> Fornt 프로젝트: infonation-web
 
-##API Swagger
+## API Swagger
 - http://api.infonation.kr/swagger-ui/index.html
 
 ## 개발환경
