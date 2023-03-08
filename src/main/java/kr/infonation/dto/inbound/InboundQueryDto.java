@@ -19,6 +19,7 @@ public class InboundQueryDto {
     private String supplierName;
     private String remark;
     private InboundGbn inboundGbn;
+    private String inboundExpDate;
     private Long inboundSeq;
     private Long itemId;
     private String itemName;
@@ -30,7 +31,8 @@ public class InboundQueryDto {
     private String makeLotNo;
     private String makeDate;
 
-    public InboundQueryDto(String inboundNo, String inboundDate, Long bizId, String bizName, Long centerId, String centerName, Long customerId, String customerName, Long supplierId, String supplierName, String remark, InboundGbn inboundGbn, Long inboundSeq, Long itemId, String itemName, int qty, int price,
+    public InboundQueryDto(String inboundNo, String inboundDate, Long bizId, String bizName, Long centerId, String centerName, Long customerId, String customerName,
+                           Long supplierId, String supplierName, String remark, InboundGbn inboundGbn, String inboundExpDate, Long inboundSeq, Long itemId, String itemName, int qty, int price,
                            boolean status, String subRemark, String expDate, String makeLotNo, String makeDate) {
         this.inboundNo = inboundNo;
         this.inboundDate = inboundDate;
@@ -54,5 +56,6 @@ public class InboundQueryDto {
         this.expDate = expDate;
         this.makeLotNo = makeLotNo;
         this.makeDate = makeDate;
+        this.inboundExpDate =inboundExpDate;
     }
 }

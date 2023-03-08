@@ -61,7 +61,6 @@ public class SlipNoService {
         return slipNo;
     }
 */
-    private final Map<String, SlipNo> slipNoCache = new ConcurrentHashMap<>();
 
     @Transactional
     public String generateSlipNo(String slipGbn, String slipDate) throws CustomException {
@@ -69,24 +68,25 @@ public class SlipNoService {
             throw new CustomException("전표번호 생성중 날짜 타입이 바르지 않습니다.");
         }
 
-        SlipNo slipNo = slipNoCache.computeIfAbsent(slipGbn + slipDate, key -> {
-            List<SlipNo> result = em.createQuery("select s " +
-                            "from SlipNo s " +
-                            "where s.slipGbn = :slipGbn " +
-                            "and s.slipDate = :slipDate  ", SlipNo.class)
-                    .setParameter("slipGbn", slipGbn)
-                    .setParameter("slipDate", slipDate)
-                    .setLockMode(LockModeType.PESSIMISTIC_WRITE) // SELECT ... FOR UPDATE
-                    .getResultList();
+        List<SlipNo> result = em.createQuery("select s " +
+                        "from SlipNo s " +
+                        "where s.slipGbn = :slipGbn " +
+                        "and s.slipDate = :slipDate  ", SlipNo.class)
+                .setParameter("slipGbn", slipGbn)
+                .setParameter("slipDate", slipDate)
+                .setLockMode(LockModeType.PESSIMISTIC_WRITE) // SELECT ... FOR UPDATE
+                .getResultList();
 
-            if (result.isEmpty()) {
-                return new SlipNo(slipGbn, slipDate, 1);
-            } else {
-                SlipNo existingSlipNo = result.get(0);
-                existingSlipNo.updateCount();
-                return existingSlipNo;
-            }
-        });
+        SlipNo slipNo;
+        if (result.isEmpty()) {
+            System.out.println("\"isEmpty\" = " + "isEmpty");
+            slipNo = new SlipNo(slipGbn, slipDate, 1);
+        } else {
+            SlipNo existingSlipNo = result.get(0);
+            System.out.println("existingSlipNo = " + existingSlipNo);
+            existingSlipNo.updateCount();
+            slipNo = existingSlipNo;
+        }
 
         em.persist(slipNo);
         em.flush();

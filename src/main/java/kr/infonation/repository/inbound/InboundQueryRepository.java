@@ -27,7 +27,7 @@ public class InboundQueryRepository {
                         (Projections.constructor
                                 (InboundQueryDto.class, inbound.inboundNo, inbound.inboundDate, inbound.biz.id, biz.name,
                                         inbound.center.id, center.name, inbound.customer.id, customer.name,
-                                        inbound.supplier.id, supplier.name, inbound.remark, inbound.inBoundGbn,
+                                        inbound.supplier.id, supplier.name, inbound.remark, inbound.inBoundGbn, inbound.inboundExpDate,
                                         inboundItem.inboundSeq, inboundItem.item.id, item.name, inboundItem.qty, inboundItem.price,
                                         inboundItem.status, inboundItem.subRemark, inboundItem.expDate, inboundItem.makeLotNo, inboundItem.makeDate))
                 .from(inbound)

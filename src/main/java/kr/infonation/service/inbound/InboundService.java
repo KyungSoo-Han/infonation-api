@@ -1,5 +1,6 @@
 package kr.infonation.service.inbound;
 
+import kr.infonation.config.CustomException;
 import kr.infonation.domain.biz.Biz;
 import kr.infonation.domain.center.Center;
 import kr.infonation.domain.cust.Customer;
@@ -42,7 +43,6 @@ public class InboundService {
     private final ItemRepository itemRepository;
     private final InboundQueryRepository inboundQueryRepository;
 
-
     public List<InboundQueryDto> findInbound(String inboundNo) {
        return inboundQueryRepository.findInbound(inboundNo);
 
@@ -50,43 +50,42 @@ public class InboundService {
     @Transactional
     public InboundDto.CreateResponse createInboundAndItem(InboundDto.CreateRequest request) throws Exception {
 
-        /*
-        Biz biz = bizRepository.findById(request.getBizId())
-                .orElseThrow(() -> new EntityNotFoundException("사업장을 찾을 수 없습니다."));
-        Center center = centerRepository.findById(request.getCenterId())
-                .orElseThrow(() -> new EntityNotFoundException("센터를 찾을 수 없습니다."));
-        Customer customer = customerRepository.findById(request.getCustomerId())
-                .orElseThrow(() -> new EntityNotFoundException("화주사를 찾을 수 없습니다."));
-        Supplier supplier = supplierRepository.findById(request.getSupplierId())
-                .orElseThrow(() -> new EntityNotFoundException("공급사를 찾을 수 없습니다."));
-        Item item = itemRepository.findById(request.getItemId())
-                .orElseThrow(() -> new EntityNotFoundException("품목을 찾을 수 없습니다."));
-        */
-        System.out.println("request = " + request);
         Biz biz = findByIdOrThrow(bizRepository, request.getBizId(), "사업장을 찾을 수 없습니다.");
         Center center = findByIdOrThrow(centerRepository, request.getCenterId(), "센터를 찾을 수 없습니다.");
         Customer customer = findByIdOrThrow(customerRepository, request.getCustomerId(), "화주사를 찾을 수 없습니다.");
         Supplier supplier = findByIdOrThrow(supplierRepository, request.getSupplierId(), "공급사를 찾을 수 없습니다.");
 
-        /**
-         * 전표번호 생성
-         */
-        String slipNo = slipNoService.generateSlipNo("I", request.getInboundDate().replace("-",""));
+        // 전표번호 가져오기 -> 이미 채번된 전표일 경우 그대로 반환
+        String slipNo = getSlipNo(request);
 
+        // 전표 정보 저장
         Inbound inbound = inboundRepository.save(request.toEntity(slipNo, biz, center, customer, supplier));
 
+        // 기존 저장된 품목 데이터 가져오기 -> 응답시 사용
+        List<InboundItem> inboundItemList = getSavedInboundItem(request, slipNo, inbound);
+
+        // 전표 품목 정보 저장
         for (InboundDto.ItemCreateRequest req : request.getItemCreateRequest()) {
 
             Item item = findByIdOrThrow(itemRepository, req.getItemId(), "품목을 찾을 수 없습니다.");
 
-            InboundItem inboundItem = inboundItemRepository.save(
-                    req.toEntity(inbound, item, req.getQty(), req.getPrice(), req.getExpDate(),
-                            req.getMakeLotNo(), req.getMakeDate(), req.getSubRemark()));
+            if (req.getInboundSeq() == null) {
+                // 순번이 없을 경우 신규 생성
+                InboundItem inboundItem = inboundItemRepository.save(
+                        req.toEntity(inbound, item, req.getQty(), req.getPrice(), req.getExpDate(),
+                                req.getMakeLotNo(), req.getMakeDate(), req.getSubRemark()));
 
-            inbound.addInboundItem(inboundItem);
+                inbound.addInboundItem(inboundItem);
+            } else {
+                // 순번이 있는 경우에는 find후 엔티티 update
+                inboundItemRepository.findById(req.getInboundSeq())
+                        .get()
+                        .update(item, req.getQty(), req.getPrice(), req.getExpDate(),
+                                req.getMakeLotNo(), req.getMakeDate(), req.getSubRemark(), req.isStatus());
+            }
         }
 
-        List<InboundItem> inboundItemList = inbound.getInboundItemList();
+        // 기존에 저장된 품목정보와 신규로 입력된 품목정보를 응답 객체로 생성
         Stream<InboundDto.ItemCreateResponse> itemCreateResponseStream =
                 inboundItemList.stream().map(m -> new InboundDto.ItemCreateResponse(m, m.getItem().getId(), m.getItem().getName()));
 
@@ -103,17 +102,38 @@ public class InboundService {
                 itemCreateResponseStream.collect(Collectors.toList())
         );
 
-        /*
-        Map<String, Object> rtnMap = new HashMap<>();
-        rtnMap.put("Biz", biz);
-        rtnMap.put("Center", center);
-        rtnMap.put("Customer", customer);
-        rtnMap.put("Supplier", supplier);
-        rtnMap.put("Inbound", inbound);
-        rtnMap.put("InboundItem", inbound.getInboundItemList());
-        */
-
         return response;
+    }
+
+    /***
+     * 기존에 입력된 입고 품목정보 가져오기
+     * @param request
+     * @param slipNo
+     * @param inbound
+     * @return
+     */
+    private List<InboundItem> getSavedInboundItem(InboundDto.CreateRequest request, String slipNo, Inbound inbound) {
+        List<InboundItem> inboundItemList = inbound.getInboundItemList();
+
+        if (!request.getInboundNo().isEmpty()) {
+            List<InboundItem> getInboundItem = inboundItemRepository.findByInboundNo(slipNo);
+            inboundItemList.addAll(getInboundItem);
+        }
+
+        return inboundItemList;
+    }
+
+    /***
+     * 전표번호 생성
+     * @param request
+     * @return
+     * @throws CustomException
+     */
+    private String getSlipNo(InboundDto.CreateRequest request) throws CustomException {
+
+        String slipNo = request.getInboundNo().isEmpty()
+                ? slipNoService.generateSlipNo("I", request.getInboundDate().replace("-", "")) : request.getInboundNo();
+        return slipNo;
     }
 
     // findByIdOrThrow 메서드

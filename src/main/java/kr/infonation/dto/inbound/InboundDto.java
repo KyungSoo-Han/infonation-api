@@ -16,6 +16,7 @@ import kr.infonation.dto.center.CenterDto;
 import kr.infonation.dto.cust.CustomerDto;
 import kr.infonation.dto.cust.SupplierDto;
 import kr.infonation.dto.item.ItemDto;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -40,11 +41,13 @@ public class InboundDto {
         private String inboundDate;
         private String inboundNo;
         private InboundGbn inboundGbn;
+        private String inboundExpDate;
+
 
         private List<InboundDto.ItemResponse> ItemResponse ;
 
         public Response(Long bizId, String bizName, Long centerId, String centerName, Long customerId, String customerName,
-                        Long supplierId, String supplierName, String remark, String inboundDate, String inboundNo, InboundGbn inboundGbn) {
+                        Long supplierId, String supplierName, String remark, String inboundDate, String inboundNo, InboundGbn inboundGbn, String inboundExpDate) {
             this.bizId = bizId;
             this.bizName = bizName;
             this.centerId = centerId;
@@ -57,10 +60,11 @@ public class InboundDto {
             this.inboundDate = inboundDate;
             this.inboundNo = inboundNo;
             this.inboundGbn = inboundGbn;
+            this.inboundExpDate = inboundExpDate;
         }
 
         public Response(Long bizId, String bizName, Long centerId, String centerName, Long customerId, String customerName,
-                        Long supplierId, String supplierName, String remark, String inboundDate, String inboundNo, InboundGbn inboundGbn, List<InboundDto.ItemResponse> itemResponse) {
+                        Long supplierId, String supplierName, String remark, String inboundDate, String inboundNo, InboundGbn inboundGbn, String inboundExpDate, List<InboundDto.ItemResponse> itemResponse) {
             this.bizId = bizId;
             this.bizName = bizName;
             this.centerId = centerId;
@@ -74,6 +78,7 @@ public class InboundDto {
             this.inboundNo = inboundNo;
             this.inboundGbn = inboundGbn;
             this.ItemResponse = itemResponse;
+            this.inboundExpDate = inboundExpDate;
         }
     }
 
@@ -112,12 +117,14 @@ public class InboundDto {
     @ApiModel("InboundCreateRequest")
     public static class CreateRequest {
 
+        private String inboundNo;
         private Long bizId;
         private Long centerId;
         private Long customerId;
         private Long supplierId;
         private String inboundDate;
         private InboundGbn inboundGbn;
+        private String inboundExpDate;
         private String remark;
         private List<ItemCreateRequest> itemCreateRequest;
 
@@ -128,6 +135,7 @@ public class InboundDto {
                     .customer(customer)
                     .supplier(supplier)
                     .remark(remark)
+                    .inboundExpDate(inboundExpDate)
                     .inBoundGbn(inboundGbn)
                     .inboundDate(inboundDate)
                     .inboundNo(inboundNo)
@@ -139,7 +147,7 @@ public class InboundDto {
     @Data
     @ApiModel("InboundItemCreateRequest")
     public static class ItemCreateRequest {
-
+        private Long inboundSeq;
         private Long itemId;
         private int qty;
         private int price;
@@ -179,10 +187,12 @@ public class InboundDto {
         private String inboundDate;
         private String inboundNo;
         private InboundGbn inboundGbn;
-        private List<ItemCreateResponse> itemCreateResponses ;
+        private String inboundExpDate;
+
+        private List<ItemCreateResponse> itemCreateResponse ;
 
         public CreateResponse(Inbound inbound, Long bizId, String bizName, Long centerId, String centerName,
-                              Long customerId, String customerName, Long supplierId, String supplierName, List<ItemCreateResponse> itemCreateResponses) {
+                              Long customerId, String customerName, Long supplierId, String supplierName, List<ItemCreateResponse> itemCreateResponse) {
             this.bizId = bizId;
             this.bizName = bizName;
             this.centerId = centerId;
@@ -196,7 +206,8 @@ public class InboundDto {
             this.inboundDate = inbound.getInboundDate();
             this.inboundNo = inbound.getInboundNo();
             this.inboundGbn = inbound.getInBoundGbn();
-            this.itemCreateResponses = itemCreateResponses;
+            this.inboundExpDate = inbound.getInboundExpDate();
+            this.itemCreateResponse = itemCreateResponse;
 
         }
     }
@@ -204,7 +215,7 @@ public class InboundDto {
     @Data
     @ApiModel("InboundItemCreateResponse")
     public static class ItemCreateResponse{
-
+        private Long inboundSeq;
         private Long itemId;
         private String itemName;
         private int qty;
@@ -216,6 +227,7 @@ public class InboundDto {
         private String makeDate;
 
         public ItemCreateResponse(InboundItem inboundItem, Long itemId, String itemName) {
+            this.inboundSeq = inboundItem.getInboundSeq();
             this.itemId = itemId;
             this.itemName = itemName;
             this.qty = inboundItem.getQty();

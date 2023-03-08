@@ -44,6 +44,8 @@ public class Inbound extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private InboundGbn inBoundGbn;
 
+    private String inboundExpDate;
+
     private String remark;
 
     @OneToMany(mappedBy = "inbound", cascade = CascadeType.ALL)
@@ -56,7 +58,7 @@ public class Inbound extends BaseEntity {
 
     @Builder
     public Inbound(String inboundNo, String inboundDate, Biz biz, Center center,
-                                Customer customer, Supplier supplier, InboundGbn inBoundGbn, String remark) {
+                                Customer customer, Supplier supplier, InboundGbn inBoundGbn, String remark, String inboundExpDate) {
         this.inboundNo = inboundNo;
         this.inboundDate = inboundDate;
         this.biz = biz;
@@ -65,5 +67,6 @@ public class Inbound extends BaseEntity {
         this.supplier = supplier;
         this.inBoundGbn = inBoundGbn;
         this.remark = remark;
+        this.inboundExpDate = inboundExpDate;
     }
 }

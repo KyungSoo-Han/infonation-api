@@ -42,8 +42,6 @@ public class CustomerApiController {
         return ResponseDto.SuccessResponse(res, HttpStatus.OK);
     }
 
-    @Value("${file.dir}")
-    private String fileDir;
     @PostMapping("/upload")
     public String uploadExcelFile(@RequestParam MultipartFile excelFile, HttpServletRequest request) {
         try {
