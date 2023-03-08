@@ -14,11 +14,10 @@
 - JPQL
 - MariaDB
 - Swagger
-- Docker (예정)
-- Docker Hub (예정)
-- Jenkins (예정)
-- AWS (예정)
-
+- Docker 
+- Docker Hub 
+- Jenkins 
+- AWS 
 
 ## 메뉴구성
 ### 기준정보
@@ -27,6 +26,6 @@
  3) 화주사관리: CR 완료
  4) 공급사관리: CR 완료
  5) 배송지관리: CR 완료
- 4) 품목관리: C 완료
- 5) 인고작업: C 완료
+ 4) 품목관리: CR 완료
+ 5) 인고작업: CR 완료
 
