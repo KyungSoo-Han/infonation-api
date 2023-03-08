@@ -1,6 +1,8 @@
 # WMS API 프로젝트
-- Fornt 프로젝트: infonation-web
-- http://wms.infonation.kr/
+
+## Fornt-End
+- GitHub Repository: infonation-web
+- URL: http://wms.infonation.kr/
 
 ## API Swagger
 - http://api.infonation.kr/swagger-ui/index.html
