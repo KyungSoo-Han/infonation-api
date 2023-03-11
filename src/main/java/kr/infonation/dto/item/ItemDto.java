@@ -168,4 +168,87 @@ public class ItemDto {
         }
     }
 
+    @Data
+    public static class UpdateRequest {
+        private Long id;
+        private String name;
+        private String unit;
+        private Long bizId;
+        private Long customerId;
+        private String sname;
+        private boolean status;
+        private boolean isSet;
+        private int caseEaQty;
+        private int boxEaQty;
+        private int palletEaQty;
+        private int safeStockQty;
+        private ItemStandard itemStandard;
+        private ItemStandard caseStandard;
+        private ItemStandard boxStandard;
+        private ItemStandard palletStandard;
+        private int nearExpDay;
+        private int nonDeliverDay;
+        private boolean isMakeDay;
+        private int fromMakeDay;
+        private String location;
+        private String description;
+
+    }
+
+    @Data
+    public static class UpdateResponse {
+        private Long id;
+        private String name;
+        private String unit;
+        private Long bizId;
+        private Long customerId;
+        private String sname;
+        private boolean status;
+        private boolean isSet;
+        private int caseEaQty;
+        private int boxEaQty;
+        private int palletEaQty;
+        private int safeStockQty;
+        private ItemStandard itemStandard;
+        private ItemStandard caseStandard;
+        private ItemStandard boxStandard;
+        private ItemStandard palletStandard;
+        private int nearExpDay;
+        private int nonDeliverDay;
+        private boolean isMakeDay;
+        private int fromMakeDay;
+        private String location;
+        private String description;
+
+        public UpdateResponse(Item item, Long bizId,Long customerId) {
+            this.id = item.getId();
+            this.name = item.getName();
+            this.unit = item.getUnit();
+            this.bizId = bizId;
+            this.customerId = customerId;
+            this.sname = item.getSname();
+            this.status = item.isStatus();
+            this.isSet = item.isSet();
+            this.caseEaQty = item.getCaseEaQty();
+            this.boxEaQty = item.getBoxEaQty();
+            this.palletEaQty = item.getPalletEaQty();
+            this.safeStockQty = item.getSafeStockQty();
+            this.itemStandard = item.getItemStandard();
+            this.caseStandard = item.getCaseStandard();
+            this.boxStandard = item.getBoxStandard();
+            this.palletStandard = item.getPalletStandard();
+            this.nearExpDay = item.getNearExpDay();
+            this.nonDeliverDay = item.getNonDeliverDay();
+            this.isMakeDay = item.isMakeDay();
+            this.fromMakeDay = item.getFromMakeDay();
+            this.location = item.getLocation();
+            this.description = item.getDescription();
+        }
+    }
+
+    @Data
+    @AllArgsConstructor
+    public static class DeleteResponse {
+        private Long id;
+    }
 }

@@ -3,6 +3,7 @@ package kr.infonation.domain.item;
 import kr.infonation.domain.base.ItemStandard;
 import kr.infonation.domain.biz.Biz;
 import kr.infonation.domain.cust.Customer;
+import kr.infonation.dto.item.ItemDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,6 +11,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
+
+import static javax.persistence.FetchType.LAZY;
 
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -24,11 +27,11 @@ public class Item {
     private String unit;
 
     @JoinColumn(name = "biz_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     private Biz biz;
 
     @JoinColumn(name = "customer_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     private Customer customer;
 
     @Comment("품목 약식 명칭")
@@ -121,7 +124,10 @@ public class Item {
     private String description;
 
     @Builder
-    public Item(String name, String unit, Biz biz, Customer customer, String sname, boolean status, boolean isSet, int caseEaQty, int boxEaQty, int palletEaQty, int safeStockQty, ItemStandard itemStandard, ItemStandard caseStandard, ItemStandard boxStandard, ItemStandard palletStandard, int nearExpDay, int nonDeliverDay, boolean isMakeDay, int fromMakeDay, String location, String description) {
+    public Item(String name, String unit, Biz biz, Customer customer, String sname, boolean status,
+                boolean isSet, int caseEaQty, int boxEaQty, int palletEaQty, int safeStockQty,
+                ItemStandard itemStandard, ItemStandard caseStandard, ItemStandard boxStandard, ItemStandard palletStandard,
+                int nearExpDay, int nonDeliverDay, boolean isMakeDay, int fromMakeDay, String location, String description) {
         this.name = name;
         this.unit = unit;
         this.biz = biz;
@@ -143,5 +149,29 @@ public class Item {
         this.fromMakeDay = fromMakeDay;
         this.location = location;
         this.description = description;
+    }
+
+    public void update(ItemDto.UpdateRequest request, Biz biz, Customer customer) {
+        this.name = request.getName();
+        this.unit = request.getUnit();
+        this.biz = biz;
+        this.customer = customer;
+        this.sname = request.getSname();
+        this.status = request.isStatus();
+        this.isSet = request.isSet();
+        this.caseEaQty = request.getCaseEaQty();
+        this.boxEaQty = request.getBoxEaQty();
+        this.palletEaQty = request.getPalletEaQty();
+        this.safeStockQty = request.getSafeStockQty();
+        this.itemStandard = request.getItemStandard();
+        this.caseStandard = request.getCaseStandard();
+        this.boxStandard = request.getBoxStandard();
+        this.palletStandard = request.getPalletStandard();
+        this.nearExpDay = request.getNearExpDay();
+        this.nonDeliverDay = request.getNonDeliverDay();
+        this.isMakeDay = request.isMakeDay();
+        this.fromMakeDay = request.getFromMakeDay();
+        this.location = request.getLocation();
+        this.description = request.getDescription();
     }
 }

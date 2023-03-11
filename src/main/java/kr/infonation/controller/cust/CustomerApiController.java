@@ -80,4 +80,17 @@ public class CustomerApiController {
         return ResponseDto.SuccessResponse(response, HttpStatus.OK);
     }
 
+    @PutMapping("/{id}")
+    public ResponseDto<CustomerDto.UpdateResponse> updateCustomer( @PathVariable Long id,
+                                                                        @RequestBody CustomerDto.UpdateRequest request){
+        CustomerDto.UpdateResponse updateResponse = customerService.updateCustomer(id, request);
+        return ResponseDto.SuccessResponse(updateResponse, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseDto<CustomerDto.DeleteResponse> deleteCustomer(@PathVariable Long id){
+        CustomerDto.DeleteResponse deleteResponse = customerService.deleteCustomer(id);
+        return ResponseDto.SuccessResponse(deleteResponse, HttpStatus.OK);
+    }
+
 }

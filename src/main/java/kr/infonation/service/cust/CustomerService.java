@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,5 +37,23 @@ public class CustomerService {
         return response;
     }
 
+    @Transactional
+    public CustomerDto.UpdateResponse updateCustomer(Long id, CustomerDto.UpdateRequest request) {
+        Customer customer = customerRepository
+                .findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("잘못된 화주사 아이디입니다."));
 
+        customer.update(request);
+        return new CustomerDto.UpdateResponse(customer);
+    }
+
+    public CustomerDto.DeleteResponse deleteCustomer(Long id) {
+        customerRepository
+                .findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("잘못된 화주사 아이디입니다."));
+
+        customerRepository.deleteById(id);
+
+        return new CustomerDto.DeleteResponse(id);
+    }
 }
