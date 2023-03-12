@@ -17,12 +17,14 @@ public class SelectController {
     private final SelectService selectService;
 
     @GetMapping("/{gbn}")
-    public List<SelectDto> selectCustomerData (@PathVariable String gbn ,@RequestParam(required = false) Long parentId , @RequestParam(required = false) Long codeId
+    public List<SelectDto> selectCustomerData (@PathVariable String gbn ,@RequestParam(required = false) Long bizId , @RequestParam(required = false) Long parentId , @RequestParam(required = false) Long codeId
                                                                         , @RequestParam(required = false) String codeName) throws CustomException {
         System.out.println("gbn = " + gbn);
+        System.out.println("bizId = " + bizId);
+        System.out.println("parentId = " + parentId);
         System.out.println("codeId = " + codeId);
         System.out.println("codeName = " + codeName);
-        return selectService.selectTableData(gbn, parentId, codeId, codeName);
+        return selectService.selectTableData(gbn, bizId, parentId, codeId, codeName);
     }
 
 }

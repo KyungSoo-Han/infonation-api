@@ -2,12 +2,15 @@ package kr.infonation.service.item;
 
 import kr.infonation.domain.biz.Biz;
 import kr.infonation.domain.cust.Customer;
+import kr.infonation.domain.cust.Supplier;
 import kr.infonation.domain.item.Item;
 import kr.infonation.dto.biz.BizDto;
 import kr.infonation.dto.cust.CustomerDto;
+import kr.infonation.dto.cust.SupplierDto;
 import kr.infonation.dto.item.ItemDto;
 import kr.infonation.repository.biz.BizRepository;
 import kr.infonation.repository.cust.CustomerRepository;
+import kr.infonation.repository.cust.SupplierRepository;
 import kr.infonation.repository.item.ItemQueryRepository;
 import kr.infonation.repository.item.ItemRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +29,7 @@ public class ItemService {
     private final ItemQueryRepository itemQueryRepository;
     private final BizRepository bizRepository;
     private final CustomerRepository customerRepository;
+    private final SupplierRepository supplierRepository;
 
 
     public List<ItemDto.Response> findItemList(Long bizId, Long customerId, String itemName){
@@ -38,13 +42,16 @@ public class ItemService {
     @Transactional
     public ItemDto.CreateResponse createItem (ItemDto.CreateRequest request){
 
-        Biz biz = bizRepository.getReferenceById(request.getBizId());
-        Customer customer = customerRepository.getReferenceById(request.getCustomerId());
-        Item item = itemRepository.save(request.toEntity(biz, customer));
+        Biz biz = bizRepository.findById(request.getBizId()).orElseThrow(() -> new EntityNotFoundException("잘못된 사업장 아이디입니다."));
+        Customer customer = customerRepository.findById(request.getCustomerId()).orElseThrow(() -> new EntityNotFoundException("잘못된 화주사 아이디입니다."));
+        Supplier supplier = supplierRepository.findById(request.getSupplierId()).orElseThrow(() -> new EntityNotFoundException("잘못된 공급사 아이디입니다."));
+
+        Item item = itemRepository.save(request.toEntity(biz, customer,supplier));
 
         BizDto.Response bizDto = new BizDto.Response(item.getBiz());
         CustomerDto.Response customerDto = new CustomerDto.Response(item.getCustomer());
-        ItemDto.CreateResponse response = new ItemDto.CreateResponse(item, bizDto, customerDto);
+        SupplierDto.Response supplierDto = new SupplierDto.Response(item.getSupplier());
+        ItemDto.CreateResponse response = new ItemDto.CreateResponse(item, bizDto, customerDto,supplierDto);
 
         return response;
     }
@@ -54,11 +61,12 @@ public class ItemService {
 
         Biz biz = bizRepository.findById(request.getBizId()).orElseThrow(() -> new EntityNotFoundException("잘못된 사업장 아이디입니다."));
         Customer customer = customerRepository.findById(request.getCustomerId()).orElseThrow(() -> new EntityNotFoundException("잘못된 화주사 아이디입니다."));
+        Supplier supplier = supplierRepository.findById(request.getSupplierId()).orElseThrow(() -> new EntityNotFoundException("잘못된 화주사 아이디입니다."));
 
         Item item = itemRepository.findById(request.getId()).orElseThrow(() -> new EntityNotFoundException("잘못된 품목 아이디입니다."));
-        item.update(request,biz,customer);
+        item.update(request,biz,customer,supplier);
 
-        return new ItemDto.UpdateResponse(item, biz.getId(), customer.getId());
+        return new ItemDto.UpdateResponse(item, biz.getId(), customer.getId(), supplier.getId());
     }
 
     @Transactional
@@ -67,5 +75,13 @@ public class ItemService {
         itemRepository.deleteById(id);
 
         return new ItemDto.DeleteResponse(id);
+    }
+
+    public ItemDto.Response findItem(Long id) {
+        Item item = itemRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("잘못된 품목 아이디입니다."));
+
+        return new ItemDto.Response(item);
+
     }
 }

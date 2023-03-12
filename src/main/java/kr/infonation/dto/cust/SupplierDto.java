@@ -5,7 +5,9 @@ import kr.infonation.domain.base.Address;
 import kr.infonation.domain.biz.Biz;
 import kr.infonation.domain.cust.Customer;
 import kr.infonation.domain.cust.Supplier;
+import kr.infonation.domain.cust.Supplier;
 import kr.infonation.dto.biz.BizDto;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
@@ -120,4 +122,67 @@ public class SupplierDto {
         }
     }
 
+    @Data
+    @ApiModel("SupplierUpdateRequest")
+    public static class UpdateRequest {
+        private Long bizId;
+        private Long customerId;
+        private String name;
+        private String engName;
+        private Address address;
+        private String ownerName;
+        private String bizNo;
+        private String bizType;
+        private String bizItem;
+        private String email;
+        private String telNo;
+        private String faxNo;
+        private String homepage;
+        private boolean status;
+    }
+
+    @Data
+    @ApiModel("SupplierUpdateResponse")
+    public static class UpdateResponse{
+        private Long id;
+        private Long bizId;
+        private Long customerId;
+        private String name;
+        private String engName;
+        private Address address;
+        private String ownerName;
+        private String bizNo;
+        private String bizType;
+        private String bizItem;
+        private String email;
+        private String telNo;
+        private String faxNo;
+        private String homepage;
+        private boolean status;
+
+        public UpdateResponse(Supplier supplier, Long bizId, Long customerId) {
+            this.id = supplier.getId();
+            this.bizId = bizId;
+            this.customerId = customerId;
+            this.name = supplier.getName();
+            this.engName = supplier.getEngName();
+            this.address = supplier.getAddress();
+            this.ownerName = supplier.getOwnerName();
+            this.bizNo = supplier.getBizNo();
+            this.bizType = supplier.getBizType();
+            this.bizItem = supplier.getBizItem();
+            this.email = supplier.getEmail();
+            this.telNo = supplier.getTelNo();
+            this.faxNo = supplier.getFaxNo();
+            this.homepage = supplier.getHomepage();
+            this.status = supplier.isStatus();
+        }
+    }
+
+    @Data
+    @AllArgsConstructor
+    public static class DeleteResponse {
+        private Long id;
+
+    }
 }

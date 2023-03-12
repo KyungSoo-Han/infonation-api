@@ -28,4 +28,5 @@ insert into item (item_id, box_ea_qty, box_barcode, box_depth, box_height, box_w
                   description, from_make_day, is_make_day, is_set, item_barcode, item_depth, item_height,
                   item_weight, item_width, location, name, near_exp_day, non_deliver_day, pallet_ea_qty, pallet_barcode, pallet_depth, pallet_height,
                   pallet_weight, pallet_width, safe_stock_qty, sname, status, unit, biz_id, customer_id)
-values (1, 1, 'test', 1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,'TEST ITEM',1,1,1,1,11,1,1,1,1,1,1,1,1,1);
+values (1, 60, '88020030221', 1800, 1200,6000,480,10,'88020030222',300,200,1000,800,100,90,1,1,'88200302242',
+        30,20,100,80,'A01-01-01','듀라셀 건전지',1,50,1200,'8802440502',36000,24000,120000,5600,10000,'건전지',1,'',1,1);

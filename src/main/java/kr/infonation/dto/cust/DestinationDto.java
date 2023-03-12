@@ -6,6 +6,7 @@ import kr.infonation.domain.biz.Biz;
 import kr.infonation.domain.cust.Customer;
 import kr.infonation.domain.cust.Destination;
 import kr.infonation.dto.biz.BizDto;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
@@ -120,4 +121,67 @@ public class DestinationDto {
         }
     }
 
+    @Data
+    @ApiModel("DestinationUpdateRequest")
+    public static class UpdateRequest {
+        private Long bizId;
+        private Long customerId;
+        private String name;
+        private String engName;
+        private Address address;
+        private String ownerName;
+        private String bizNo;
+        private String bizType;
+        private String bizItem;
+        private String email;
+        private String telNo;
+        private String faxNo;
+        private String homepage;
+        private boolean status;
+    }
+
+    @Data
+    @ApiModel("DestinationUpdateResponse")
+    public static class UpdateResponse{
+        private Long id;
+        private Long bizId;
+        private Long customerId;
+        private String name;
+        private String engName;
+        private Address address;
+        private String ownerName;
+        private String bizNo;
+        private String bizType;
+        private String bizItem;
+        private String email;
+        private String telNo;
+        private String faxNo;
+        private String homepage;
+        private boolean status;
+
+        public UpdateResponse(Destination destination, Long bizId, Long customerId) {
+            this.id = destination.getId();
+            this.bizId = bizId;
+            this.customerId = customerId;
+            this.name = destination.getName();
+            this.engName = destination.getEngName();
+            this.address = destination.getAddress();
+            this.ownerName = destination.getOwnerName();
+            this.bizNo = destination.getBizNo();
+            this.bizType = destination.getBizType();
+            this.bizItem = destination.getBizItem();
+            this.email = destination.getEmail();
+            this.telNo = destination.getTelNo();
+            this.faxNo = destination.getFaxNo();
+            this.homepage = destination.getHomepage();
+            this.status = destination.isStatus();
+        }
+    }
+
+    @Data
+    @AllArgsConstructor
+    public static class DeleteResponse {
+        private Long id;
+
+    }
 }

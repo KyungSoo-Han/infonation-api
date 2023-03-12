@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +45,32 @@ public class DestinationService {
         rtnObj.put("destination", destination);
 
         return rtnObj;
+    }
+
+    @Transactional
+    public DestinationDto.UpdateResponse updateDestination(Long id, DestinationDto.UpdateRequest request){
+        Biz biz = bizRepository.findById(request.getBizId())
+                .orElseThrow(() -> new EntityNotFoundException("사업장을 찾을 수 없습니다."));
+
+        Customer customer = customerRepository.findById(request.getCustomerId())
+                .orElseThrow(() -> new EntityNotFoundException("화주사를 찾을 수 없습니다."));
+
+        Destination destination = destinationRepository.findById(id)
+                                            .orElseThrow(() -> new EntityNotFoundException("잘못된 배송지 아이디입니다."));
+        destination.update(request);
+
+        return new DestinationDto.UpdateResponse(destination, biz.getId(),customer.getId());
+    }
+
+    @Transactional
+    public DestinationDto.DeleteResponse deleteDestination(Long id){
+
+        destinationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("잘못된 배송지 아이디입니다."));
+
+        destinationRepository.deleteById(id);
+
+        return new DestinationDto.DeleteResponse(id);
     }
 
     public List<DestinationDto.Response> findDestination(Long bizId, Long customerId) {

@@ -47,4 +47,18 @@ public class DestinationApiController {
         return ResponseDto.SuccessResponse(response, HttpStatus.OK);
     }
 
+    @PutMapping("/{id}")
+    public ResponseDto<DestinationDto.UpdateResponse> updateDestination(@PathVariable Long id,
+                                                                            @RequestBody DestinationDto.UpdateRequest request){
+        DestinationDto.UpdateResponse updateResponse = destinationService.updateDestination(id, request);
+
+        return ResponseDto.SuccessResponse(updateResponse, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseDto<DestinationDto.DeleteResponse> deleteDestination(@PathVariable Long id){
+        DestinationDto.DeleteResponse deleteResponse = destinationService.deleteDestination(id);
+        return ResponseDto.SuccessResponse(deleteResponse, HttpStatus.OK);
+    }
+
 }

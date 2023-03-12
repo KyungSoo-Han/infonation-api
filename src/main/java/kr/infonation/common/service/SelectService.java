@@ -15,7 +15,7 @@ import java.util.List;
 public class SelectService {
     private final SelectRepository selectRepository;
 
-    public List<SelectDto> selectTableData( String gbn, Long parentId, Long codeId, String codeName) throws CustomException {
-        return selectRepository.selectTableData(gbn, parentId, codeId, codeName);
+    public List<SelectDto> selectTableData( String gbn, Long bizId, Long parentId, Long codeId, String codeName) throws CustomException {
+        return selectRepository.selectTableData(gbn, bizId, parentId, codeId, codeName);
     }
 }

@@ -3,6 +3,8 @@ package kr.infonation.domain.cust;
 import kr.infonation.domain.base.Address;
 import kr.infonation.domain.base.BaseEntity;
 import kr.infonation.domain.biz.Biz;
+import kr.infonation.dto.cust.CustomerDto;
+import kr.infonation.dto.cust.DestinationDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -57,5 +59,45 @@ public class Destination extends BaseEntity {
         this.faxNo = faxNo;
         this.homepage = homepage;
         this.status = status;
+    }
+
+
+    public void update(DestinationDto.UpdateRequest request) {
+
+        if (request.getName() != null) {
+            this.name = request.getName();
+        }
+        if (request.getEngName() != null) {
+            this.engName = request.getEngName();
+        }
+        if (request.getAddress() != null) {
+            this.address = request.getAddress();
+        }
+        if (request.getOwnerName() != null) {
+            this.ownerName = request.getOwnerName();
+        }
+        if (request.getBizNo() != null) {
+            this.bizNo = request.getBizNo();
+        }
+        if (request.getBizType() != null) {
+            this.bizType = request.getBizType();
+        }
+        if (request.getBizItem() != null) {
+            this.bizItem = request.getBizItem();
+        }
+        if (request.getEmail() != null) {
+            this.email = request.getEmail();
+        }
+        if (request.getTelNo() != null) {
+            this.telNo = request.getTelNo();
+        }
+        if (request.getFaxNo() != null) {
+            this.faxNo = request.getFaxNo();
+        }
+        if (request.getHomepage() != null) {
+            this.homepage = request.getHomepage();
+        }
+
+        this.status = request.isStatus();
     }
 }

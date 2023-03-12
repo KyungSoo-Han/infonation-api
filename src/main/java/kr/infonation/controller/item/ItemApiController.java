@@ -18,7 +18,14 @@ import java.util.List;
 public class ItemApiController {
     private final ItemService itemService;
 
-    @GetMapping({"/{bizId}/{customerId}"})
+    @GetMapping({"/{id}"})
+    public ResponseDto<ItemDto.Response> findItem(@PathVariable Long id) {
+        ItemDto.Response itemList = itemService.findItem( id);
+
+        return ResponseDto.SuccessResponse(itemList, HttpStatus.OK);
+    }
+
+    @GetMapping({"/list/{bizId}/{customerId}"})
     public ResponseDto<List<ItemDto.Response>> findItemList(@PathVariable Long bizId, @PathVariable Long customerId,
                                                         @RequestParam(required = false) String itemName ){
         List<ItemDto.Response> itemList = itemService.findItemList(bizId, customerId, itemName);

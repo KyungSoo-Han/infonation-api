@@ -3,6 +3,7 @@ package kr.infonation.domain.item;
 import kr.infonation.domain.base.ItemStandard;
 import kr.infonation.domain.biz.Biz;
 import kr.infonation.domain.cust.Customer;
+import kr.infonation.domain.cust.Supplier;
 import kr.infonation.dto.item.ItemDto;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -34,6 +35,10 @@ public class Item {
     @ManyToOne(fetch = LAZY)
     private Customer customer;
 
+    @JoinColumn(name = "supplier_id")
+    @ManyToOne(fetch = LAZY)
+    private Supplier supplier;
+
     @Comment("품목 약식 명칭")
     private String sname;
     @Comment("품목 활성화 상태")
@@ -42,13 +47,13 @@ public class Item {
     private boolean isSet;
 
     @Comment("케이스 입수량")
-    private int caseEaQty;
+    private Integer caseEaQty;
     @Comment("박스 입수량")
-    private int boxEaQty;
+    private Integer boxEaQty;
     @Comment("파렛트 입수량")
-    private int palletEaQty;
+    private Integer palletEaQty;
     @Comment("안전재고량")
-    private int safeStockQty;
+    private Integer safeStockQty;
 
     @Embedded
     @AttributeOverrides({
@@ -111,27 +116,28 @@ public class Item {
     private ItemStandard palletStandard;
 
     @Comment("유통기한 임박 기준일")
-    private int nearExpDay;
+    private Integer nearExpDay;
     @Comment("출고 불가 기준일")
-    private int nonDeliverDay;
+    private Integer nonDeliverDay;
     @Comment("제조일자 사용")
     private boolean isMakeDay;
     @Comment("제조일로부터 00일")
-    private int fromMakeDay;
+    private Integer fromMakeDay;
     @Comment("대표 로케이션")
     private String location;
     @Comment("품목 설명")
     private String description;
 
     @Builder
-    public Item(String name, String unit, Biz biz, Customer customer, String sname, boolean status,
-                boolean isSet, int caseEaQty, int boxEaQty, int palletEaQty, int safeStockQty,
+    public Item(String name, String unit, Biz biz, Customer customer, Supplier supplier, String sname, boolean status,
+                boolean isSet, Integer caseEaQty, Integer boxEaQty, Integer palletEaQty, Integer safeStockQty,
                 ItemStandard itemStandard, ItemStandard caseStandard, ItemStandard boxStandard, ItemStandard palletStandard,
-                int nearExpDay, int nonDeliverDay, boolean isMakeDay, int fromMakeDay, String location, String description) {
+                Integer nearExpDay, Integer nonDeliverDay, boolean isMakeDay, Integer fromMakeDay, String location, String description) {
         this.name = name;
         this.unit = unit;
         this.biz = biz;
         this.customer = customer;
+        this.supplier = supplier;
         this.sname = sname;
         this.status = status;
         this.isSet = isSet;
@@ -151,11 +157,12 @@ public class Item {
         this.description = description;
     }
 
-    public void update(ItemDto.UpdateRequest request, Biz biz, Customer customer) {
+    public void update(ItemDto.UpdateRequest request, Biz biz, Customer customer, Supplier supplier) {
         this.name = request.getName();
         this.unit = request.getUnit();
         this.biz = biz;
         this.customer = customer;
+        this.supplier = supplier;
         this.sname = request.getSname();
         this.status = request.isStatus();
         this.isSet = request.isSet();

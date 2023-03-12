@@ -7,10 +7,10 @@ import javax.persistence.Embeddable;
 @Getter
 @Embeddable
 public class ItemStandard {
-    private int width;
-    private int height;
-    private int depth;
-    private int weight;
+    private Integer width;
+    private Integer height;
+    private Integer depth;
+    private Integer weight;
     private String barcode;
 
 }

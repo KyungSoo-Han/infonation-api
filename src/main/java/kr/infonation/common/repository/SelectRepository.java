@@ -14,32 +14,41 @@ import java.util.List;
 public class SelectRepository {
 
     private final EntityManager em;
-    public List<SelectDto> selectTableData(String gbn, Long parentId, Long codeId, String codeName) throws CustomException {
+    public List<SelectDto> selectTableData(String gbn, Long bizId, Long parentId, Long codeId, String codeName) throws CustomException {
 
         List<SelectDto> selectDto ;
 
         System.out.println("gbn = " + gbn);
-        System.out.println("gbn==\"customer\" = " + gbn == "customer");
-        System.out.println("gbn = " + gbn.equals("customer"));
+        System.out.println("bizId = " + bizId);
+        System.out.println("parentId = " + parentId);
+        System.out.println("codeId = " + codeId);
+        System.out.println("codeName = " + codeName);
+        //System.out.println("gbn==\"customer\" = " + gbn == "customer");
+        //System.out.println("gbn = " + gbn.equals("customer"));
 
         if (gbn.equals("customer")) {
             selectDto = em.createQuery("select new kr.infonation.common.dto.SelectDto( c.id, c.name) " +
-                            "from Customer c where (:codeId is null or c.id = :codeId) and c.name like CONCAT('%', :codeName, '%')")
+                            "from Customer c where c.biz.id = :bizId and (:codeId is null or c.id = :codeId) and c.name like CONCAT('%', COALESCE(:codeName,''), '%')")
+                    .setParameter("bizId", bizId)
                     .setParameter("codeId", codeId)
                     .setParameter("codeName", codeName)
                     .getResultList();
         }
         else if (gbn.equals("supplier")){
             selectDto = em.createQuery("select new kr.infonation.common.dto.SelectDto( c.id, c.name) " +
-                            "from Supplier c where c.customer.id = :parentId and (:codeId is null or c.id = :codeId) and c.name like CONCAT('%', :codeName, '%')")
+                            "from Supplier c where c.biz.id = :bizId and c.customer.id = :parentId and (  c.id = :codeId or :codeId is null ) and c.name like CONCAT('%', COALESCE(:codeName,''), '%')")
+                    .setParameter("bizId", bizId)
                     .setParameter("parentId", parentId)
                     .setParameter("codeId", codeId)
                     .setParameter("codeName", codeName)
                     .getResultList();
+
+            System.out.println("selectDto = " + selectDto);
         }
         else if (gbn.equals("item")) {
             selectDto = em.createQuery("select new kr.infonation.common.dto.SelectDto( c.id, c.name) " +
-                            "from Item c where c.customer.id = :parentId and (:codeId is null or c.id = :codeId) and c.name like CONCAT('%', :codeName, '%')")
+                            "from Item c where c.biz.id = :bizId and c.customer.id = :parentId and (:codeId is null or c.id = :codeId) and c.name like CONCAT('%', :codeName, '%')")
+                    .setParameter("bizId", bizId)
                     .setParameter("parentId", parentId)
                     .setParameter("codeId", codeId)
                     .setParameter("codeName", codeName)

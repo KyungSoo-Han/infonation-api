@@ -7,14 +7,12 @@ import kr.infonation.domain.cust.Customer;
 import kr.infonation.domain.cust.Supplier;
 import kr.infonation.dto.biz.BizDto;
 import kr.infonation.dto.cust.CustomerDto;
+import kr.infonation.dto.cust.DestinationDto;
 import kr.infonation.dto.cust.SupplierDto;
 import kr.infonation.service.cust.SupplierService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -39,6 +37,20 @@ public class SupplierApiController {
         SupplierDto.CreateResponse response = new SupplierDto.CreateResponse(supplier, bizDto, customerDto);
 
         return ResponseDto.SuccessResponse(response, HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseDto<SupplierDto.UpdateResponse> updateDestination(@PathVariable Long id,
+                                                                        @RequestBody SupplierDto.UpdateRequest request){
+        SupplierDto.UpdateResponse updateResponse = supplierService.updateSupplier(id, request);
+
+        return ResponseDto.SuccessResponse(updateResponse, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseDto<SupplierDto.DeleteResponse> deleteDestination(@PathVariable Long id){
+        SupplierDto.DeleteResponse deleteResponse = supplierService.deleteSupplier(id);
+        return ResponseDto.SuccessResponse(deleteResponse, HttpStatus.OK);
     }
 
 }
