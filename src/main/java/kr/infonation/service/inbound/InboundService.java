@@ -10,6 +10,7 @@ import kr.infonation.domain.inbound.InboundItem;
 import kr.infonation.domain.item.Item;
 import kr.infonation.dto.inbound.InboundDto;
 import kr.infonation.dto.inbound.InboundQueryDto;
+import kr.infonation.dto.inbound.InboundSrchCond;
 import kr.infonation.repository.base.SlipNoService;
 import kr.infonation.repository.biz.BizRepository;
 import kr.infonation.repository.center.CenterRepository;
@@ -46,6 +47,10 @@ public class InboundService {
     public List<InboundQueryDto> findInbound(String inboundNo) {
        return inboundQueryRepository.findInbound(inboundNo);
 
+    }
+
+    public List<InboundQueryDto> findInboundList(InboundSrchCond srchCond){
+        return inboundQueryRepository.findInboundList(srchCond);
     }
     @Transactional
     public InboundDto.CreateResponse createInboundAndItem(InboundDto.CreateRequest request) throws Exception {

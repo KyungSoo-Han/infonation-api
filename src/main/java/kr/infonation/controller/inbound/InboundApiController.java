@@ -3,6 +3,7 @@ package kr.infonation.controller.inbound;
 import kr.infonation.common.dto.ResponseDto;
 import kr.infonation.dto.inbound.InboundDto;
 import kr.infonation.dto.inbound.InboundQueryDto;
+import kr.infonation.dto.inbound.InboundSrchCond;
 import kr.infonation.service.inbound.InboundService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -38,6 +39,14 @@ public class InboundApiController {
                 .collect(toList());
 
         return ResponseDto.SuccessResponse(responseList, HttpStatus.OK);
+    }
+
+    @PostMapping("/list")
+    public ResponseDto<List<InboundQueryDto>> findInboundList(@RequestBody InboundSrchCond srchCond){
+
+        List<InboundQueryDto> responseList = inboundService.findInboundList(srchCond);
+
+        return ResponseDto.SuccessResponse(responseList , HttpStatus.OK);
     }
 
     @PostMapping

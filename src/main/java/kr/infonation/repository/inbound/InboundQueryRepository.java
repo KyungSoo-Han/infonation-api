@@ -1,11 +1,15 @@
 package kr.infonation.repository.inbound;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.infonation.dto.inbound.InboundQueryDto;
+import kr.infonation.dto.inbound.InboundSrchCond;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static kr.infonation.domain.biz.QBiz.biz;
@@ -40,6 +44,44 @@ public class InboundQueryRepository {
                 .where(inbound.inboundNo.eq(inboundNo))
                 .fetch();
     }
+
+
+    public List<InboundQueryDto> findInboundList(InboundSrchCond srchCond) {
+        System.out.println("srchCond = " + srchCond);
+        return queryFactory.select
+                        (Projections.constructor
+                                (InboundQueryDto.class, inbound.inboundNo, inbound.inboundDate, inbound.biz.id, biz.name,
+                                        inbound.center.id, center.name, inbound.customer.id, customer.name,
+                                        inbound.supplier.id, supplier.name, inbound.remark, inbound.inBoundGbn, inbound.inboundExpDate,
+                                        inboundItem.inboundSeq, inboundItem.item.id, item.name, inboundItem.qty, inboundItem.price,
+                                        inboundItem.status, inboundItem.subRemark, inboundItem.expDate, inboundItem.makeLotNo, inboundItem.makeDate))
+                .from(inbound)
+                .leftJoin(inbound.inboundItemList, inboundItem)
+                .leftJoin(inbound.biz, biz)
+                .leftJoin(inbound.center, center)
+                .leftJoin(inbound.customer, customer)
+                .leftJoin(inbound.supplier, supplier)
+                .leftJoin(inboundItem.item, item)
+                .where(eqBizId(srchCond.getBizId()),betweenDate(srchCond.getFromDate(), srchCond.getToDate()),
+                            eqInboundNo(srchCond.getInboundNo()), eqCustomerId(srchCond.getCustomerId()),eqSupplierId(srchCond.getSupplierId()))
+                .fetch();
+    }
+    private BooleanExpression eqBizId(Long bizId){
+        return bizId != null ? inbound.biz.id.eq(bizId) : null;
+    }
+    private BooleanExpression eqInboundNo(String inboundNo){
+        return StringUtils.hasText(inboundNo) ? inbound.inboundNo.contains(inboundNo) : null;
+    }
+    private BooleanExpression betweenDate(String fromDate, String toDate){
+        return fromDate != null && toDate != null ? inbound.inboundDate.between(fromDate, toDate) : null;
+    }
+    private BooleanExpression eqCustomerId(Long customerId){
+        return customerId != null ? inbound.customer.id.eq(customerId) : null;
+    }
+    private BooleanExpression eqSupplierId(Long supplierId){
+        return supplierId != null ? inbound.supplier.id.eq(supplierId) : null;
+    }
+
 /*
     public InboundDto.Response findInbound (String inboundNo){
         QInbound inbound = new QInbound("i");
