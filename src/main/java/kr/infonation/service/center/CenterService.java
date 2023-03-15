@@ -6,12 +6,11 @@ import kr.infonation.domain.center.Center;
 import kr.infonation.dto.center.CenterDto;
 import kr.infonation.repository.biz.BizRepository;
 import kr.infonation.repository.center.CenterRepository;
-import kr.infonation.repository.center.CenterRepositoryDsl;
+import kr.infonation.repository.center.CenterQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -19,7 +18,7 @@ import java.util.List;
 @Service
 public class CenterService {
 
-    private final CenterRepositoryDsl qRepository;
+    private final CenterQueryRepository qRepository;
     private final CenterRepository repository;
     private final BizRepository bizRepository;
 
