@@ -56,4 +56,19 @@ public class InboundApiController {
 
         return ResponseDto.SuccessResponse(response, HttpStatus.OK);
     }
+
+    @PostMapping("/approve")
+    public ResponseDto<String> inboundApprove(@RequestBody List<InboundDto.InboundApproveRequest> request){
+        System.out.println("request = " + request);
+        inboundService.inboundApprove(request);
+
+        return ResponseDto.SuccessResponse("", HttpStatus.OK);
+    }
+    @PostMapping("/cancel")
+    public ResponseDto<String> inboundCancel(@RequestBody List<InboundDto.InboundCancelRequest> request){
+        System.out.println("request = " + request);
+        inboundService.inboundCancel(request);
+
+        return ResponseDto.SuccessResponse("", HttpStatus.OK);
+    }
 }

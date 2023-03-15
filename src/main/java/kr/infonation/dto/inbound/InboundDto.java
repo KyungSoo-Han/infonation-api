@@ -240,4 +240,13 @@ public class InboundDto {
         }
     }
 
+    @Data
+    public static class InboundApproveRequest{
+        private String inboundNo;
+    }
+    @Data
+    public static class InboundCancelRequest{
+        private String inboundNo;
+    }
+
 }

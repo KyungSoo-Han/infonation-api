@@ -147,4 +147,13 @@ public class InboundService {
         return repository.findById(id).orElseThrow(() -> new EntityNotFoundException(errorMessage));
     }
 
+    @Transactional
+    public void inboundApprove(List<InboundDto.InboundApproveRequest> req){
+        inboundQueryRepository.inboundApprove(req);
+    }
+
+    public void inboundCancel(List<InboundDto.InboundCancelRequest> request) {
+
+        inboundQueryRepository.inboundCancel(request);
+    }
 }

@@ -2,7 +2,9 @@ package kr.infonation.repository.inbound;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import kr.infonation.dto.inbound.InboundDto;
 import kr.infonation.dto.inbound.InboundQueryDto;
 import kr.infonation.dto.inbound.InboundSrchCond;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,7 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static kr.infonation.domain.biz.QBiz.biz;
 import static kr.infonation.domain.center.QCenter.center;
@@ -27,20 +30,7 @@ public class InboundQueryRepository {
     private final JPAQueryFactory queryFactory ;
     public List<InboundQueryDto> findInbound(String inboundNo) {
 
-        return queryFactory.select
-                        (Projections.constructor
-                                (InboundQueryDto.class, inbound.inboundNo, inbound.inboundDate, inbound.biz.id, biz.name,
-                                        inbound.center.id, center.name, inbound.customer.id, customer.name,
-                                        inbound.supplier.id, supplier.name, inbound.remark, inbound.inBoundGbn, inbound.inboundExpDate,
-                                        inboundItem.inboundSeq, inboundItem.item.id, item.name, inboundItem.qty, inboundItem.price,
-                                        inboundItem.status, inboundItem.subRemark, inboundItem.expDate, inboundItem.makeLotNo, inboundItem.makeDate))
-                .from(inbound)
-                .leftJoin(inbound.inboundItemList, inboundItem)
-                .leftJoin(inbound.biz, biz)
-                .leftJoin(inbound.center, center)
-                .leftJoin(inbound.customer, customer)
-                .leftJoin(inbound.supplier, supplier)
-                .leftJoin(inboundItem.item, item)
+        return getInboundQueryDtoJPAQuery()
                 .where(inbound.inboundNo.eq(inboundNo))
                 .fetch();
     }
@@ -48,6 +38,13 @@ public class InboundQueryRepository {
 
     public List<InboundQueryDto> findInboundList(InboundSrchCond srchCond) {
         System.out.println("srchCond = " + srchCond);
+        return getInboundQueryDtoJPAQuery()
+                .where(eqBizId(srchCond.getBizId()),betweenDate(srchCond.getFromDate(), srchCond.getToDate()),
+                            eqInboundNo(srchCond.getInboundNo()), eqCustomerId(srchCond.getCustomerId()),eqSupplierId(srchCond.getSupplierId()))
+                .fetch();
+    }
+
+    private JPAQuery<InboundQueryDto> getInboundQueryDtoJPAQuery() {
         return queryFactory.select
                         (Projections.constructor
                                 (InboundQueryDto.class, inbound.inboundNo, inbound.inboundDate, inbound.biz.id, biz.name,
@@ -61,11 +58,9 @@ public class InboundQueryRepository {
                 .leftJoin(inbound.center, center)
                 .leftJoin(inbound.customer, customer)
                 .leftJoin(inbound.supplier, supplier)
-                .leftJoin(inboundItem.item, item)
-                .where(eqBizId(srchCond.getBizId()),betweenDate(srchCond.getFromDate(), srchCond.getToDate()),
-                            eqInboundNo(srchCond.getInboundNo()), eqCustomerId(srchCond.getCustomerId()),eqSupplierId(srchCond.getSupplierId()))
-                .fetch();
+                .leftJoin(inboundItem.item, item);
     }
+
     private BooleanExpression eqBizId(Long bizId){
         return bizId != null ? inbound.biz.id.eq(bizId) : null;
     }
@@ -80,6 +75,26 @@ public class InboundQueryRepository {
     }
     private BooleanExpression eqSupplierId(Long supplierId){
         return supplierId != null ? inbound.supplier.id.eq(supplierId) : null;
+    }
+
+    public void inboundApprove(List<InboundDto.InboundApproveRequest> request){
+        queryFactory.update(inboundItem)
+                    .set(inboundItem.status, true)
+                    .where(inboundItem
+                            .inbound
+                            .inboundNo.in(request.stream()
+                                        .map(InboundDto.InboundApproveRequest::getInboundNo).collect(Collectors.toList())))
+                    .execute();
+    }
+
+    public void inboundCancel(List<InboundDto.InboundCancelRequest> request) {
+        queryFactory.update(inboundItem)
+                .set(inboundItem.status, false)
+                .where(inboundItem
+                        .inbound
+                        .inboundNo.in(request.stream()
+                                .map(InboundDto.InboundCancelRequest::getInboundNo).collect(Collectors.toList())))
+                .execute();
     }
 
 /*
