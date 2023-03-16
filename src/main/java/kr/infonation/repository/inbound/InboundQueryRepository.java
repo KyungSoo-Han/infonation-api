@@ -8,6 +8,7 @@ import kr.infonation.dto.inbound.InboundDto;
 import kr.infonation.dto.inbound.InboundQueryDto;
 import kr.infonation.dto.inbound.InboundSrchCond;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
@@ -23,6 +24,7 @@ import static kr.infonation.domain.inbound.QInbound.inbound;
 import static kr.infonation.domain.inbound.QInboundItem.inboundItem;
 import static kr.infonation.domain.item.QItem.item;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class InboundQueryRepository {
@@ -38,6 +40,7 @@ public class InboundQueryRepository {
 
     public List<InboundQueryDto> findInboundList(InboundSrchCond srchCond) {
         System.out.println("srchCond = " + srchCond);
+        log.info("srchCond", srchCond);
         return getInboundQueryDtoJPAQuery()
                 .where(eqBizId(srchCond.getBizId()),betweenDate(srchCond.getFromDate(), srchCond.getToDate()),
                             eqInboundNo(srchCond.getInboundNo()), eqCustomerId(srchCond.getCustomerId()),eqSupplierId(srchCond.getSupplierId()))
