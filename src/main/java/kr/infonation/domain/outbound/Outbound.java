@@ -5,12 +5,16 @@ import kr.infonation.domain.center.Center;
 import kr.infonation.domain.cust.Customer;
 import kr.infonation.domain.cust.Destination;
 import kr.infonation.domain.cust.Supplier;
+import kr.infonation.domain.inbound.InboundItem;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -44,6 +48,13 @@ public class Outbound {
 
     private String remark;
 
+    @OneToMany(mappedBy = "outbound", cascade = CascadeType.ALL)
+    private List<OutboundItem> outboundItemList= new ArrayList<>();
+
+    public void addOutboundItem(OutboundItem outboundItem) {
+        outboundItemList.add(outboundItem);
+        outboundItem.setOutbound(this);
+    }
 
     @Builder
     public Outbound(String outboundNo, String outboundDate, Biz biz, Center center,
