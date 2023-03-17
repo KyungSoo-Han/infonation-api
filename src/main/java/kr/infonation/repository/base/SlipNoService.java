@@ -76,7 +76,9 @@ public class SlipNoService {
                 .setParameter("slipDate", slipDate)
                 .setLockMode(LockModeType.PESSIMISTIC_WRITE) // SELECT ... FOR UPDATE
                 .getResultList();
-
+        for (SlipNo slipNo : result) {
+            System.out.println("slipNo = " + slipNo);
+        }
         SlipNo slipNo;
         if (result.isEmpty()) {
             System.out.println("\"isEmpty\" = " + "isEmpty");
@@ -87,6 +89,8 @@ public class SlipNoService {
             existingSlipNo.updateCount();
             slipNo = existingSlipNo;
         }
+
+        System.out.println("slipNo = " + slipNo);
 
         em.persist(slipNo);
         em.flush();

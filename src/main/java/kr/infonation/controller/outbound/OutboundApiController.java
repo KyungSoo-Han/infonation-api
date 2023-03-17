@@ -21,7 +21,7 @@ public class OutboundApiController {
     @PostMapping
     public ResponseDto<OutboundDto.CreateResponse> createOutbound(@RequestBody OutboundDto.CreateRequest request) throws CustomException {
 
-        OutboundDto.CreateResponse outbound = outboundService.createOutbound(request);
+        OutboundDto.CreateResponse outbound = outboundService.createOutboundAndItem(request);
 
         return ResponseDto.SuccessResponse(outbound, HttpStatus.OK);
     }
