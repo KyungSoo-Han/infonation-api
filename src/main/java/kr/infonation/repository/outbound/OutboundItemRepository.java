@@ -1,4 +1,4 @@
-package kr.infonation.service.outbound;
+package kr.infonation.repository.outbound;
 
 import kr.infonation.domain.outbound.OutboundItem;
 import org.springframework.data.jpa.repository.JpaRepository;

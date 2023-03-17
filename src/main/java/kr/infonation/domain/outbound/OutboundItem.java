@@ -31,9 +31,9 @@ public class OutboundItem extends BaseEntity{
     @ManyToOne(fetch = FetchType.LAZY)
     private Item item;
 
-    private int qty;
+    private Integer qty;
 
-    private int price;
+    private Integer price;
     private String makeLotNo;
     private String makeDate;
     private String expDate;

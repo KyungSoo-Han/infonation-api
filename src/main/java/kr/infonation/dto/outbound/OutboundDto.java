@@ -12,6 +12,7 @@ import kr.infonation.domain.outbound.OutboundItem;
 import kr.infonation.domain.item.Item;
 import kr.infonation.domain.outbound.Outbound;
 import kr.infonation.domain.outbound.OutboundGbn;
+import kr.infonation.dto.inbound.InboundDto;
 import kr.infonation.dto.outbound.OutboundDto;
 import lombok.Data;
 
@@ -32,6 +33,7 @@ public class OutboundDto {
         private OutboundGbn outboundGbn;
         private String outboundExpDate;
         private String remark;
+        private List<OutboundDto.ItemCreateRequest> itemCreateRequest;
 
         public Outbound toEntity(String outboundNo, Biz biz, Center center, Customer customer, Destination destination) {
             Outbound outbound = Outbound.builder()
@@ -95,15 +97,15 @@ public class OutboundDto {
     public static class ItemCreateRequest {
         private Long outboundSeq;
         private Long itemId;
-        private int qty;
-        private int price;
+        private Integer qty;
+        private Integer price;
         private boolean status;
         private String subRemark;
         private String expDate;
         private String makeLotNo;
         private String makeDate;
 
-        public OutboundItem toEntity(Outbound outbound, Item item, int qty, int price, String expDate, String makeLotNo, String makeDate, String subRemark) {
+        public OutboundItem toEntity(Outbound outbound, Item item, Integer qty, Integer price, String expDate, String makeLotNo, String makeDate, String subRemark) {
             OutboundItem outboundItem = OutboundItem.builder()
                     .outbound(outbound)
                     .item(item)
