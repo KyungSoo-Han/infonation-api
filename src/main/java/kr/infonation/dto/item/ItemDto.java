@@ -265,4 +265,18 @@ public class ItemDto {
     public static class DeleteResponse {
         private Long id;
     }
+
+    @Data
+    public static class ExcelUpload{
+        private String name;
+        private String sname;
+        private boolean status;
+        private boolean isSet;
+        private boolean isMakeDay;
+        private Integer fromMakeDay;
+        private String location;
+        private String description;
+
+
+    }
 }
