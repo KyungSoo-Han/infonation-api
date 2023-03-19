@@ -42,33 +42,6 @@ public class CustomerApiController {
         return ResponseDto.SuccessResponse(res, HttpStatus.OK);
     }
 
-    @PostMapping("/upload")
-    public String uploadExcelFile(@RequestParam MultipartFile excelFile, HttpServletRequest request) {
-        try {
-
-            Workbook workbook = new XSSFWorkbook(excelFile.getInputStream());
-            Sheet sheet = workbook.getSheetAt(0); // 첫번째 시트 사용
-            MultipartResolver multipartResolver = new StandardServletMultipartResolver();
-            multipartResolver.isMultipart(request);
-            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-                Row row = sheet.getRow(i);
-                String cellValue1 = row.getCell(0).getStringCellValue();
-                String cellValue2 = String.valueOf(row.getCell(1).getNumericCellValue());
-                String cellValue3 = row.getCell(2).getStringCellValue();
-
-                System.out.println("cellValue1 = " + cellValue1);
-                System.out.println("cellValue2 = " + cellValue2);
-                System.out.println("cellValue3 = " + cellValue3);
-            }
-
-            workbook.close();
-
-            return "OK";
-        } catch (Exception e) {
-            e.printStackTrace();
-            return e.getMessage();
-        }
-    }
 
     @PostMapping
     public ResponseDto<CustomerDto.CreateResponse> createCustomer(@RequestBody CustomerDto.CreateRequest request) throws CustomException {

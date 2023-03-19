@@ -7,9 +7,18 @@ import kr.infonation.dto.cust.CustomerDto;
 import kr.infonation.dto.item.ItemDto;
 import kr.infonation.service.item.ItemService;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -39,6 +48,15 @@ public class ItemApiController {
         ItemDto.CreateResponse response = itemService.createItem(request);
 
         return ResponseDto.SuccessResponse(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/excelUpload")
+    public ResponseDto<String> uploadExcelFile(@RequestParam MultipartFile excelFile) throws IOException {
+
+            itemService.excelUpload(excelFile);
+
+            return ResponseDto.SuccessResponse("OK", HttpStatus.OK);
+
     }
 
     @PutMapping

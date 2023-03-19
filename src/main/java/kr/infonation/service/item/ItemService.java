@@ -14,10 +14,19 @@ import kr.infonation.repository.cust.SupplierRepository;
 import kr.infonation.repository.item.ItemQueryRepository;
 import kr.infonation.repository.item.ItemRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -84,4 +93,38 @@ public class ItemService {
         return new ItemDto.Response(item);
 
     }
+
+    public void excelUpload(MultipartFile excelFile) throws IOException {
+
+        Workbook workbook = new XSSFWorkbook(excelFile.getInputStream());
+        Sheet sheet = workbook.getSheetAt(0); // 첫번째 시트 사용
+
+        for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+            Row row = sheet.getRow(i);
+            var test= row.getCell(0);
+            System.out.println("test = " + test);
+            String itemNm =  getCellValue(row,0);
+            System.out.println("itemNm = " + itemNm);
+            if(row.getCell(1)!=null){
+                String itemSNm =  getCellValue(row,1);
+                System.out.println("itemSNm = " + itemSNm);
+            }
+            if(row.getCell(2)!=null){
+                String status =  getCellValue(row,2);
+                System.out.println("status = " + status);
+            }
+            //System.out.println("cellValue2 = " + cellValue2);
+            //System.out.println("cellValue3 = " + cellValue3);
+            //System.out.println("cellValue4 = " + cellValue4);
+            //System.out.println("cellValue5 = " + cellValue5);
+        }
+
+        workbook.close();
+    }
+
+    private static String getCellValue(Row row, int cellIdx) {
+        //return row.cellIterator().next().getStringCellValue();
+        return row.getCell(cellIdx).getStringCellValue();
+    }
+
 }
