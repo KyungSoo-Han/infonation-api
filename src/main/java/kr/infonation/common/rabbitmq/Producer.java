@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 public class Producer {
 
     private final RabbitTemplate rabbitTemplate;
-    public void sendTo(String message){
+    public void sendToItem(String message){
         System.out.println("message = " + message);
-        this.rabbitTemplate.convertAndSend("CREATE_POST_QUEUE", message);
+        this.rabbitTemplate.convertAndSend("CREATE_ITEM_QUEUE", message);
     }
 }
