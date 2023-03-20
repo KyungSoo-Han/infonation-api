@@ -267,6 +267,7 @@ public class ItemDto {
     }
 
     @Data
+    @AllArgsConstructor
     public static class ExcelUpload{
         private String name;
         private String sname;
@@ -274,9 +275,23 @@ public class ItemDto {
         private boolean isSet;
         private boolean isMakeDay;
         private Integer fromMakeDay;
-        private String location;
         private String description;
 
 
+        public Item toEntity(Biz biz, Customer customer, Supplier supplier) {
+            return Item.builder()
+                    .name(name)
+                    .biz(biz)
+                    .supplier(supplier)
+                    .customer(customer)
+                    .sname(sname)
+                    .status(status)
+                    .isSet(isSet)
+                    .isMakeDay(isMakeDay)
+                    .fromMakeDay(fromMakeDay)
+                    .description(description)
+                    .build();
+        }
     }
+
 }

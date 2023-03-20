@@ -21,13 +21,12 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartResolver;
-import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 
 import javax.persistence.EntityNotFoundException;
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -94,37 +93,49 @@ public class ItemService {
 
     }
 
-    public void excelUpload(MultipartFile excelFile) throws IOException {
+    public void excelUpload(Long bizId, Long customerId, Long supplierId, MultipartFile excelFile) throws IOException {
+
+        Biz biz = bizRepository.findById(bizId).orElseThrow(() -> new EntityNotFoundException("잘못된 사업장 아이디입니다."));
+        Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new EntityNotFoundException("잘못된 화주사 아이디입니다."));
+        Supplier supplier = supplierRepository.findById(supplierId).orElseThrow(() -> new EntityNotFoundException("잘못된 화주사 아이디입니다."));
+
 
         Workbook workbook = new XSSFWorkbook(excelFile.getInputStream());
         Sheet sheet = workbook.getSheetAt(0); // 첫번째 시트 사용
+        List<Item> itemList = new ArrayList<>();
 
         for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+
             Row row = sheet.getRow(i);
-            var test= row.getCell(0);
-            System.out.println("test = " + test);
-            String itemNm =  getCellValue(row,0);
-            System.out.println("itemNm = " + itemNm);
-            if(row.getCell(1)!=null){
-                String itemSNm =  getCellValue(row,1);
-                System.out.println("itemSNm = " + itemSNm);
-            }
-            if(row.getCell(2)!=null){
-                String status =  getCellValue(row,2);
-                System.out.println("status = " + status);
-            }
-            //System.out.println("cellValue2 = " + cellValue2);
-            //System.out.println("cellValue3 = " + cellValue3);
-            //System.out.println("cellValue4 = " + cellValue4);
-            //System.out.println("cellValue5 = " + cellValue5);
+
+            String  itemNm =  getStrCellValue(row,0);
+            String  itemSNm =  getStrCellValue(row,1);
+            boolean status = getStrCellValue(row,2).equals("Y") ? true : false ;
+            boolean isSet = getStrCellValue(row,3).equals("Y") ? true : false ;
+            boolean isMakeDay = getStrCellValue(row,4).equals("Y") ? true : false ;
+            Integer fromMakeDay = getNumCellValue(row,5) > 0 ? getNumCellValue(row,2).intValue() : 0;
+            String  description = getStrCellValue(row,6);
+
+            itemList.add(new ItemDto.ExcelUpload(itemNm,itemSNm, status, isSet, isMakeDay, fromMakeDay,description)
+                                 .toEntity(biz,customer,supplier));
         }
 
+        itemRepository.saveAll(itemList);
         workbook.close();
     }
 
-    private static String getCellValue(Row row, int cellIdx) {
-        //return row.cellIterator().next().getStringCellValue();
-        return row.getCell(cellIdx).getStringCellValue();
+    private static String getStrCellValue(Row row, int cellIdx) {
+        if(row.getCell(cellIdx) != null)
+            return getStrCellValue(row,cellIdx);
+        else
+            return "";
+    }
+
+    private static Double getNumCellValue(Row row, int cellIdx) {
+        if(row.getCell(cellIdx) != null)
+            return row.getCell(cellIdx).getNumericCellValue();
+        else
+            return 0D;
     }
 
 }

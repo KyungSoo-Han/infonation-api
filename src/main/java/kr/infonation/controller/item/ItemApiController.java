@@ -51,9 +51,10 @@ public class ItemApiController {
     }
 
     @PostMapping("/excelUpload")
-    public ResponseDto<String> uploadExcelFile(@RequestParam MultipartFile excelFile) throws IOException {
+    public ResponseDto<String> uploadExcelFile(@RequestParam Long bizId, @RequestParam Long customerId,
+                                                @RequestParam Long supplierId, @RequestParam MultipartFile excelFile) throws IOException {
 
-            itemService.excelUpload(excelFile);
+            itemService.excelUpload(bizId, customerId, supplierId, excelFile);
 
             return ResponseDto.SuccessResponse("OK", HttpStatus.OK);
 
