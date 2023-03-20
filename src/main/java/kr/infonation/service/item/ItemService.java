@@ -175,9 +175,9 @@ public class ItemService {
             Integer fromMakeDay = getNumCellValue(row,5) > 0 ?  getNumCellValue(row,5).intValue() : 0;
             String  description = getStrCellValue(row,6);
 
-            ItemDto.ExcelUpload uploadData = new ItemDto.ExcelUpload(itemNm, itemSNm, status, isSet, isMakeDay, fromMakeDay, description);
-            String targetData = objectMapper.writeValueAsString(uploadData);
-            producer.sendTo(targetData);
+            Item item = new ItemDto.ExcelUpload(itemNm, itemSNm, status, isSet, isMakeDay, fromMakeDay, description).toEntity(biz,customer,supplier);
+            String targetData = objectMapper.writeValueAsString(item);
+            producer.sendToItem(targetData);
         }
 
         workbook.close();
