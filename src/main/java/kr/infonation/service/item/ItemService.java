@@ -1,5 +1,7 @@
 package kr.infonation.service.item;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import kr.infonation.common.rabbitmq.Producer;
 import kr.infonation.domain.biz.Biz;
 import kr.infonation.domain.cust.Customer;
 import kr.infonation.domain.cust.Supplier;
@@ -38,7 +40,8 @@ public class ItemService {
     private final BizRepository bizRepository;
     private final CustomerRepository customerRepository;
     private final SupplierRepository supplierRepository;
-
+    private final Producer producer;
+    private final ObjectMapper objectMapper;
 
     public List<ItemDto.Response> findItemList(Long bizId, Long customerId, String itemName){
        return itemQueryRepository.findItemList(bizId, customerId, itemName)
@@ -92,7 +95,7 @@ public class ItemService {
         return new ItemDto.Response(item);
 
     }
-
+    @Transactional
     public void excelUpload(ItemDto.ExcelUploadRequest request, MultipartFile excelFile) throws IOException {
 
         Biz biz = bizRepository.findById(request.getBizId()).orElseThrow(() -> new EntityNotFoundException("잘못된 사업장 아이디입니다."));
@@ -150,5 +153,34 @@ public class ItemService {
             return 0D;
         }
     }
+    @Transactional
+    public void excelUploadByRabbitMq(ItemDto.ExcelUploadRequest request, MultipartFile excelFile) throws IOException {
 
+        Biz biz = bizRepository.findById(request.getBizId()).orElseThrow(() -> new EntityNotFoundException("잘못된 사업장 아이디입니다."));
+        Customer customer = customerRepository.findById(request.getCustomerId()).orElseThrow(() -> new EntityNotFoundException("잘못된 화주사 아이디입니다."));
+        Supplier supplier = supplierRepository.findById(request.getSupplierId()).orElseThrow(() -> new EntityNotFoundException("잘못된 화주사 아이디입니다."));
+
+        Workbook workbook = new XSSFWorkbook(excelFile.getInputStream());
+        Sheet sheet = workbook.getSheetAt(0); // 첫번째 시트 사용
+
+        for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+
+            Row row = sheet.getRow(i);
+
+            String  itemNm =  getStrCellValue(row,0);
+            String  itemSNm =  getStrCellValue(row,1);
+            boolean status = getStrCellValue(row,2).equals("Y") ? true : false ;
+            boolean isSet = getStrCellValue(row,3).equals("Y") ? true : false ;
+            boolean isMakeDay = getStrCellValue(row,4).equals("Y") ? true : false ;
+            Integer fromMakeDay = getNumCellValue(row,5) > 0 ?  getNumCellValue(row,5).intValue() : 0;
+            String  description = getStrCellValue(row,6);
+
+            ItemDto.ExcelUpload uploadData = new ItemDto.ExcelUpload(itemNm, itemSNm, status, isSet, isMakeDay, fromMakeDay, description);
+            String targetData = objectMapper.writeValueAsString(uploadData);
+            producer.sendTo(targetData);
+        }
+
+        workbook.close();
+
+    }
 }
