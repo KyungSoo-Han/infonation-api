@@ -1,5 +1,6 @@
 package kr.infonation.controller.item;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.infonation.common.dto.ResponseDto;
 import kr.infonation.domain.item.Item;
 import kr.infonation.dto.biz.BizDto;
@@ -31,7 +32,6 @@ import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 @RequestMapping("/api/item")
 public class ItemApiController {
     private final ItemService itemService;
-
     @GetMapping({"/{id}"})
     public ResponseDto<ItemDto.Response> findItem(@PathVariable Long id) {
         ItemDto.Response itemList = itemService.findItem( id);
@@ -66,6 +66,22 @@ public class ItemApiController {
         multipartResolver.isMultipart(request);
 
         itemService.excelUpload(excelUploadRequest, excelFile);
+
+        return ResponseDto.SuccessResponse("OK", HttpStatus.OK);
+
+    }
+
+    @PostMapping("/rabbitmq")
+    public ResponseDto<String> uploadExcelFileByRabbitMq(  @RequestPart(name = "excelUploadRequest") ItemDto.ExcelUploadRequest excelUploadRequest,
+                                                          @RequestPart(name = "excelFile") MultipartFile excelFile,
+                                                          HttpServletRequest request) throws IOException {
+        System.out.println("request = " + excelUploadRequest);
+        System.out.println("excelFile = " + excelFile);
+
+        StandardServletMultipartResolver multipartResolver = new StandardServletMultipartResolver();
+        multipartResolver.isMultipart(request);
+
+        itemService.excelUploadByRabbitMq(excelUploadRequest, excelFile);
 
         return ResponseDto.SuccessResponse("OK", HttpStatus.OK);
 
