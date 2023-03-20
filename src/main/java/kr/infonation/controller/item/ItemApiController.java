@@ -12,14 +12,19 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
+
+import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM;
+import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 
 @RequiredArgsConstructor
 @RestController
@@ -50,13 +55,19 @@ public class ItemApiController {
         return ResponseDto.SuccessResponse(response, HttpStatus.OK);
     }
 
-    @PostMapping("/excelUpload")
-    public ResponseDto<String> uploadExcelFile(@RequestParam Long bizId, @RequestParam Long customerId,
-                                                @RequestParam Long supplierId, @RequestParam MultipartFile excelFile) throws IOException {
+    @PostMapping(value="/excelUpload")
+    public ResponseDto<String> uploadExcelFile(  @RequestPart(name = "excelUploadRequest") ItemDto.ExcelUploadRequest excelUploadRequest,
+                                                 @RequestPart(name = "excelFile") MultipartFile excelFile,
+                                                 HttpServletRequest request) throws IOException {
+        System.out.println("request = " + excelUploadRequest);
+        System.out.println("excelFile = " + excelFile);
 
-            itemService.excelUpload(bizId, customerId, supplierId, excelFile);
+        StandardServletMultipartResolver multipartResolver = new StandardServletMultipartResolver();
+        multipartResolver.isMultipart(request);
 
-            return ResponseDto.SuccessResponse("OK", HttpStatus.OK);
+        itemService.excelUpload(excelUploadRequest, excelFile);
+
+        return ResponseDto.SuccessResponse("OK", HttpStatus.OK);
 
     }
 

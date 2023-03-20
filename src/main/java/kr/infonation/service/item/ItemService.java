@@ -93,11 +93,11 @@ public class ItemService {
 
     }
 
-    public void excelUpload(Long bizId, Long customerId, Long supplierId, MultipartFile excelFile) throws IOException {
+    public void excelUpload(ItemDto.ExcelUploadRequest request, MultipartFile excelFile) throws IOException {
 
-        Biz biz = bizRepository.findById(bizId).orElseThrow(() -> new EntityNotFoundException("잘못된 사업장 아이디입니다."));
-        Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new EntityNotFoundException("잘못된 화주사 아이디입니다."));
-        Supplier supplier = supplierRepository.findById(supplierId).orElseThrow(() -> new EntityNotFoundException("잘못된 화주사 아이디입니다."));
+        Biz biz = bizRepository.findById(request.getBizId()).orElseThrow(() -> new EntityNotFoundException("잘못된 사업장 아이디입니다."));
+        Customer customer = customerRepository.findById(request.getCustomerId()).orElseThrow(() -> new EntityNotFoundException("잘못된 화주사 아이디입니다."));
+        Supplier supplier = supplierRepository.findById(request.getSupplierId()).orElseThrow(() -> new EntityNotFoundException("잘못된 화주사 아이디입니다."));
 
 
         Workbook workbook = new XSSFWorkbook(excelFile.getInputStream());
@@ -113,7 +113,7 @@ public class ItemService {
             boolean status = getStrCellValue(row,2).equals("Y") ? true : false ;
             boolean isSet = getStrCellValue(row,3).equals("Y") ? true : false ;
             boolean isMakeDay = getStrCellValue(row,4).equals("Y") ? true : false ;
-            Integer fromMakeDay = getNumCellValue(row,5) > 0 ? getNumCellValue(row,2).intValue() : 0;
+            Integer fromMakeDay = getNumCellValue(row,5) > 0 ?  getNumCellValue(row,5).intValue() : 0;
             String  description = getStrCellValue(row,6);
 
             itemList.add(new ItemDto.ExcelUpload(itemNm,itemSNm, status, isSet, isMakeDay, fromMakeDay,description)
@@ -124,18 +124,31 @@ public class ItemService {
         workbook.close();
     }
 
-    private static String getStrCellValue(Row row, int cellIdx) {
-        if(row.getCell(cellIdx) != null)
-            return getStrCellValue(row,cellIdx);
-        else
+    private  String getStrCellValue(Row row, int cellIdx) {
+        try {
+            if (row.getCell(cellIdx) != null)
+                return row.getCell(cellIdx).getStringCellValue();
+            else
+                return "";
+        }
+        catch (Exception e){
+            System.out.println("e.getMessage() = " + e.getMessage());
             return "";
+        }
     }
 
-    private static Double getNumCellValue(Row row, int cellIdx) {
-        if(row.getCell(cellIdx) != null)
-            return row.getCell(cellIdx).getNumericCellValue();
-        else
+    private  Double getNumCellValue(Row row, int cellIdx) {
+        try {
+            if (row.getCell(cellIdx) != null)
+                return row.getCell(cellIdx).getNumericCellValue();
+            else
+                return 0D;
+        }
+
+        catch (Exception e){
+            System.out.println("e.getMessage() = " + e.getMessage());
             return 0D;
+        }
     }
 
 }

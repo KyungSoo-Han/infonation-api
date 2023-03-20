@@ -267,6 +267,13 @@ public class ItemDto {
     }
 
     @Data
+    public static class ExcelUploadRequest{
+        private Long bizId;
+        private Long customerId;
+        private Long supplierId;
+    }
+
+    @Data
     @AllArgsConstructor
     public static class ExcelUpload{
         private String name;
