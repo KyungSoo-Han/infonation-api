@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -121,10 +122,11 @@ public class InboundService {
         List<InboundItem> inboundItemList = inbound.getInboundItemList();
 
         if (!request.getInboundNo().isEmpty()) {
-            List<InboundItem> getInboundItem = inboundItemRepository.findByInboundNo(slipNo);
+            List<InboundItem> getInboundItem = inboundItemRepository.findByInboundNo(request.getBizId(), slipNo)
+                                                                    .stream()
+                                                                    .collect(Collectors.toList());
             inboundItemList.addAll(getInboundItem);
         }
-
         return inboundItemList;
     }
 
@@ -155,5 +157,16 @@ public class InboundService {
     public void inboundCancel(List<InboundDto.InboundCancelRequest> request) {
 
         inboundQueryRepository.inboundCancel(request);
+    }
+
+    @Transactional
+    public void deleteInbound(Long bizId, String inboundNo) {
+
+        inboundItemRepository.findByInboundNo(bizId, inboundNo).orElseThrow(()-> new EntityNotFoundException("입고정보의 품목데이터가 없습니다."));
+        inboundQueryRepository.findInboundOptional(inboundNo).orElseThrow(()-> new EntityNotFoundException("입고정보의 품목데이터가 없습니다."));
+
+        inboundItemRepository.deleteByInboundNo(inboundNo);
+        inboundRepository.deleteByInboundNo(inboundNo);
+
     }
 }
