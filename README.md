@@ -16,7 +16,7 @@
 - Spring Security (예정)
 - Query DSL
 - JPQL
-- RabbitMQ
+- RabbitMQ: 품목 엑셀업로드
 - MariaDB
 - Swagger
 - Docker 
