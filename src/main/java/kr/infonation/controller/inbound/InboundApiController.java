@@ -71,4 +71,10 @@ public class InboundApiController {
 
         return ResponseDto.SuccessResponse("", HttpStatus.OK);
     }
+
+    @DeleteMapping("/{bizId}/{inboundNo}")
+    public ResponseDto<String> deleteInbound(@PathVariable Long bizId, @PathVariable String inboundNo){
+        inboundService.deleteInbound(bizId, inboundNo);
+        return ResponseDto.SuccessResponse(inboundNo, HttpStatus.OK);
+    }
 }

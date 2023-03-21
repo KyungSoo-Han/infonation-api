@@ -27,7 +27,6 @@ public class DestinationService {
     private final BizRepository bizRepository;
     private final CustomerRepository customerRepository;
 
-
     @Transactional
     public Map<String, Object> createDestination(DestinationDto.CreateRequest request) throws CustomException {
 

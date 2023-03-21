@@ -14,6 +14,7 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static kr.infonation.domain.biz.QBiz.biz;
@@ -37,6 +38,12 @@ public class InboundQueryRepository {
                 .fetch();
     }
 
+    public Optional<InboundQueryDto> findInboundOptional(String inboundNo) {
+
+        return getInboundQueryDtoJPAQuery()
+                .where(inbound.inboundNo.eq(inboundNo))
+                .stream().findFirst();
+    }
 
     public List<InboundQueryDto> findInboundList(InboundSrchCond srchCond) {
         System.out.println("srchCond = " + srchCond);
