@@ -16,6 +16,7 @@
 - Spring Security (예정)
 - Query DSL
 - JPQL
+- RabbitMQ
 - MariaDB
 - Swagger
 - Docker 
