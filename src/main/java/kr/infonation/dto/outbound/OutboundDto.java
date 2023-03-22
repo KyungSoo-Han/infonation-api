@@ -6,20 +6,107 @@ import kr.infonation.domain.biz.Biz;
 import kr.infonation.domain.center.Center;
 import kr.infonation.domain.cust.Customer;
 import kr.infonation.domain.cust.Destination;
+import kr.infonation.domain.outbound.OutboundGbn;
 import kr.infonation.domain.outbound.OutboundItem;
 import kr.infonation.domain.outbound.Outbound;
 import kr.infonation.domain.outbound.OutboundItem;
 import kr.infonation.domain.item.Item;
 import kr.infonation.domain.outbound.Outbound;
 import kr.infonation.domain.outbound.OutboundGbn;
-import kr.infonation.dto.inbound.InboundDto;
+import kr.infonation.dto.outbound.OutboundDto;
 import kr.infonation.dto.outbound.OutboundDto;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
 public class OutboundDto {
 
+    @Data
+    @ApiModel("OutboundResponse")
+    @EqualsAndHashCode(of = "outboundNo")
+    public static class Response {
+        private Long bizId;
+        private String bizName;
+        private Long centerId;
+        private String centerName;
+        private Long customerId;
+        private String customerName;
+        private Long destinationId;
+        private String destinationName;
+        private String remark;
+        private String outboundDate;
+        private String outboundNo;
+        private OutboundGbn outboundGbn;
+        private String outboundExpDate;
+        private List<OutboundDto.ItemResponse> ItemResponse ;
+
+        public Response(Long bizId, String bizName, Long centerId, String centerName, Long customerId, String customerName,
+                        Long destinationId, String destinationName, String remark, String outboundDate, String outboundNo, OutboundGbn outboundGbn, String outboundExpDate) {
+            this.bizId = bizId;
+            this.bizName = bizName;
+            this.centerId = centerId;
+            this.centerName = centerName;
+            this.customerId = customerId;
+            this.customerName = customerName;
+            this.destinationId = destinationId;
+            this.destinationName = destinationName;
+            this.remark = remark;
+            this.outboundDate = outboundDate;
+            this.outboundNo = outboundNo;
+            this.outboundGbn = outboundGbn;
+            this.outboundExpDate = outboundExpDate;
+        }
+
+        public Response(Long bizId, String bizName, Long centerId, String centerName, Long customerId, String customerName,
+                        Long destinationId, String destinationName, String remark, String outboundDate, String outboundNo, OutboundGbn outboundGbn, String outboundExpDate, List<OutboundDto.ItemResponse> itemResponse) {
+            this.bizId = bizId;
+            this.bizName = bizName;
+            this.centerId = centerId;
+            this.centerName = centerName;
+            this.customerId = customerId;
+            this.customerName = customerName;
+            this.destinationId = destinationId;
+            this.destinationName = destinationName;
+            this.remark = remark;
+            this.outboundDate = outboundDate;
+            this.outboundNo = outboundNo;
+            this.outboundGbn = outboundGbn;
+            this.ItemResponse = itemResponse;
+            this.outboundExpDate = outboundExpDate;
+        }
+    }
+
+    @Data
+    @ApiModel("OutboundItemResponse")
+    public static class ItemResponse {
+        private String outboundNo;
+        private Long outboundSeq;
+        private Long itemId;
+        private String itemName;
+        private int qty;
+        private int price;
+        private boolean status;
+        private String subRemark;
+        private String expDate;
+        private String makeLotNo;
+        private String makeDate;
+
+        public ItemResponse(String outboundNo, Long outboundSeq, Long itemId, String itemName,
+                            int qty, int price, boolean status, String subRemark, String expDate, String makeLotNo, String makeDate) {
+            this.outboundNo = outboundNo;
+            this.outboundSeq = outboundSeq;
+            this.itemId = itemId;
+            this.itemName = itemName;
+            this.qty = qty;
+            this.price = price;
+            this.status = status;
+            this.subRemark = subRemark;
+            this.expDate = expDate;
+            this.makeLotNo = makeLotNo;
+            this.makeDate = makeDate;
+        }
+    }
     @Data
     @ApiModel("OutboundCreateRequest")
     public static class CreateRequest {
