@@ -8,15 +8,19 @@ import kr.infonation.domain.cust.Destination;
 import kr.infonation.domain.item.Item;
 import kr.infonation.domain.outbound.Outbound;
 import kr.infonation.domain.outbound.OutboundItem;
+import kr.infonation.dto.inbound.InboundQueryDto;
 import kr.infonation.dto.outbound.OutboundDto;
 import kr.infonation.dto.outbound.OutboundDto;
+import kr.infonation.dto.outbound.OutboundQueryDto;
 import kr.infonation.repository.base.SlipNoService;
 import kr.infonation.repository.biz.BizRepository;
 import kr.infonation.repository.center.CenterRepository;
 import kr.infonation.repository.cust.CustomerRepository;
 import kr.infonation.repository.cust.DestinationRepository;
+import kr.infonation.repository.inbound.InboundQueryRepository;
 import kr.infonation.repository.item.ItemRepository;
 import kr.infonation.repository.outbound.OutboundItemRepository;
+import kr.infonation.repository.outbound.OutboundQueryRepository;
 import kr.infonation.repository.outbound.OutboundRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.repository.CrudRepository;
@@ -35,15 +39,18 @@ public class OutboundService {
 
     private final OutboundRepository outboundRepository;
     private final OutboundItemRepository outboundItemRepository;
-
-
     private final BizRepository bizRepository;
     private final CenterRepository centerRepository;
     private final CustomerRepository customerRepository;
     private final DestinationRepository destinationRepository;
     private final ItemRepository itemRepository;
     private final SlipNoService slipNoService;
+    private final OutboundQueryRepository outboundQueryRepository;
 
+    public List<OutboundQueryDto> findOutbound(String outboundNo) {
+        return outboundQueryRepository.findOutbound(outboundNo);
+
+    }
     @Transactional
     public OutboundDto.CreateResponse createOutboundAndItem(OutboundDto.CreateRequest request) throws CustomException {
 
