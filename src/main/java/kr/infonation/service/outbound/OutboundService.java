@@ -114,7 +114,7 @@ public class OutboundService {
         List<OutboundItem> outboundItemList = outbound.getOutboundItemList();
 
         if (request.getOutboundNo() != null) {
-            List<OutboundItem> getOutboundItem = outboundItemRepository.findByOutboundNo(slipNo)
+            List<OutboundItem> getOutboundItem = outboundItemRepository.findByOutboundNo(request.getBizId(), slipNo)
                                                                         .stream()
                                                                         .collect(Collectors.toList());;
             outboundItemList.addAll(getOutboundItem);
@@ -145,7 +145,7 @@ public class OutboundService {
     @Transactional
     public void deleteOutbound(Long bizId, String outboundNo) {
 
-        outboundItemRepository.findByOutboundNo(outboundNo).orElseThrow(()-> new EntityNotFoundException("입고정보의 품목데이터가 없습니다."));
+        outboundItemRepository.findByOutboundNo(bizId, outboundNo).orElseThrow(()-> new EntityNotFoundException("입고정보의 품목데이터가 없습니다."));
         outboundQueryRepository.findOutboundOptional(outboundNo).orElseThrow(()-> new EntityNotFoundException("입고정보의 품목데이터가 없습니다."));
 
         outboundItemRepository.deleteByOutboundNo(outboundNo);

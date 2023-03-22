@@ -16,8 +16,8 @@ public interface OutboundItemRepository extends JpaRepository<OutboundItem, Long
     @Query("select max(u.outboundSeq) from OutboundItem u where u.outbound.outboundNo = :outboundNo ")
     Integer getOutboundMaxSeq(@Param("outboundNo") String OutboundNo);
 
-    @Query("select ii from OutboundItem ii where ii.outbound.outboundNo = :outboundNo")
-    Optional<OutboundItem> findByOutboundNo(@Param("outboundNo") String outboundNo);
+    @Query("select ii from OutboundItem ii where  ii.outbound.biz.id = :bizId and  ii.outbound.outboundNo = :outboundNo")
+    Optional<OutboundItem> findByOutboundNo(@Param("bizId") Long bizId, @Param("outboundNo") String outboundNo);
 
     @Modifying
     @Query("delete from OutboundItem i where i.outbound.outboundNo = :outboundNo")
