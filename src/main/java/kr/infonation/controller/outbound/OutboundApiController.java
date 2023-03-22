@@ -2,6 +2,8 @@ package kr.infonation.controller.outbound;
 
 import kr.infonation.common.dto.ResponseDto;
 import kr.infonation.config.CustomException;
+import kr.infonation.dto.outbound.OutboundQueryDto;
+import kr.infonation.dto.outbound.OutboundSrchCond;
 import kr.infonation.dto.outbound.OutboundDto;
 import kr.infonation.dto.outbound.OutboundQueryDto;
 import kr.infonation.service.outbound.OutboundService;
@@ -40,6 +42,16 @@ public class OutboundApiController {
 
         return ResponseDto.SuccessResponse(responseList, HttpStatus.OK);
     }
+
+    @PostMapping("/list")
+    public ResponseDto<List<OutboundQueryDto>> findOutboundList(@RequestBody OutboundSrchCond srchCond){
+
+        List<OutboundQueryDto> responseList = outboundService.findOutboundList(srchCond);
+
+        return ResponseDto.SuccessResponse(responseList , HttpStatus.OK);
+    }
+
+    
     @PostMapping
     public ResponseDto<OutboundDto.CreateResponse> createOutbound(@RequestBody OutboundDto.CreateRequest request) throws CustomException {
 

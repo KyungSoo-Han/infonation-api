@@ -1,13 +1,18 @@
 package kr.infonation.repository.outbound;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import kr.infonation.dto.inbound.InboundQueryDto;
+import kr.infonation.domain.outbound.QOutbound;
 import kr.infonation.dto.outbound.OutboundQueryDto;
+import kr.infonation.dto.outbound.OutboundSrchCond;
+import kr.infonation.dto.outbound.OutboundQueryDto;
+import kr.infonation.dto.outbound.OutboundSrchCond;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +22,7 @@ import static kr.infonation.domain.center.QCenter.center;
 import static kr.infonation.domain.cust.QCustomer.customer;
 import static kr.infonation.domain.cust.QDestination.destination;
 import static kr.infonation.domain.inbound.QInbound.inbound;
+import static kr.infonation.domain.outbound.QOutbound.outbound;
 import static kr.infonation.domain.item.QItem.item;
 import static kr.infonation.domain.outbound.QOutbound.outbound;
 import static kr.infonation.domain.outbound.QOutboundItem.outboundItem;
@@ -41,6 +47,15 @@ public class OutboundQueryRepository {
                 .stream().findFirst();
     }
 
+    public List<OutboundQueryDto> findOutboundList(OutboundSrchCond srchCond) {
+        System.out.println("srchCond = " + srchCond);
+        log.info("srchCond", srchCond);
+        return getOutboundQueryDtoJPAQuery()
+                .where(eqBizId(srchCond.getBizId()),betweenDate(srchCond.getFromDate(), srchCond.getToDate()),
+                        eqOutboundNo(srchCond.getOutboundNo()), eqCustomerId(srchCond.getCustomerId()),eqSupplierId(srchCond.getDestinationId()))
+                .fetch();
+    }
+
     private JPAQuery<OutboundQueryDto> getOutboundQueryDtoJPAQuery() {
         return queryFactory.select
                         (Projections.constructor
@@ -57,5 +72,20 @@ public class OutboundQueryRepository {
                 .leftJoin(outbound.destination, destination)
                 .leftJoin(outboundItem.item, item);
     }
-    
+
+    private BooleanExpression eqBizId(Long bizId){
+        return bizId != null ? outbound.biz.id.eq(bizId) : null;
+    }
+    private BooleanExpression eqOutboundNo(String outboundNo){
+        return StringUtils.hasText(outboundNo) ? outbound.outboundNo.contains(outboundNo) : null;
+    }
+    private BooleanExpression betweenDate(String fromDate, String toDate){
+        return fromDate != null && toDate != null ? outbound.outboundDate.between(fromDate, toDate) : null;
+    }
+    private BooleanExpression eqCustomerId(Long customerId){
+        return customerId != null ? outbound.customer.id.eq(customerId) : null;
+    }
+    private BooleanExpression eqSupplierId(Long destinationId){
+        return destinationId != null ? outbound.destination.id.eq(destinationId) : null;
+    }
 }

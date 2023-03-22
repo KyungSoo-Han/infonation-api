@@ -9,6 +9,8 @@ import kr.infonation.domain.item.Item;
 import kr.infonation.domain.outbound.Outbound;
 import kr.infonation.domain.outbound.OutboundItem;
 import kr.infonation.dto.outbound.OutboundQueryDto;
+import kr.infonation.dto.outbound.OutboundSrchCond;
+import kr.infonation.dto.outbound.OutboundQueryDto;
 import kr.infonation.dto.outbound.OutboundDto;
 import kr.infonation.dto.outbound.OutboundDto;
 import kr.infonation.dto.outbound.OutboundQueryDto;
@@ -50,6 +52,10 @@ public class OutboundService {
     public List<OutboundQueryDto> findOutbound(String outboundNo) {
         return outboundQueryRepository.findOutbound(outboundNo);
 
+    }
+
+    public List<OutboundQueryDto> findOutboundList(OutboundSrchCond srchCond){
+        return outboundQueryRepository.findOutboundList(srchCond);
     }
     @Transactional
     public OutboundDto.CreateResponse createOutboundAndItem(OutboundDto.CreateRequest request) throws CustomException {
