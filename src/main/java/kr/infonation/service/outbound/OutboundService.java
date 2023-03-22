@@ -8,7 +8,7 @@ import kr.infonation.domain.cust.Destination;
 import kr.infonation.domain.item.Item;
 import kr.infonation.domain.outbound.Outbound;
 import kr.infonation.domain.outbound.OutboundItem;
-import kr.infonation.dto.inbound.InboundQueryDto;
+import kr.infonation.dto.outbound.OutboundQueryDto;
 import kr.infonation.dto.outbound.OutboundDto;
 import kr.infonation.dto.outbound.OutboundDto;
 import kr.infonation.dto.outbound.OutboundQueryDto;
@@ -17,7 +17,7 @@ import kr.infonation.repository.biz.BizRepository;
 import kr.infonation.repository.center.CenterRepository;
 import kr.infonation.repository.cust.CustomerRepository;
 import kr.infonation.repository.cust.DestinationRepository;
-import kr.infonation.repository.inbound.InboundQueryRepository;
+import kr.infonation.repository.outbound.OutboundQueryRepository;
 import kr.infonation.repository.item.ItemRepository;
 import kr.infonation.repository.outbound.OutboundItemRepository;
 import kr.infonation.repository.outbound.OutboundQueryRepository;
@@ -114,7 +114,9 @@ public class OutboundService {
         List<OutboundItem> outboundItemList = outbound.getOutboundItemList();
 
         if (request.getOutboundNo() != null) {
-            List<OutboundItem> getOutboundItem = outboundItemRepository.findByOutboundNo(slipNo);
+            List<OutboundItem> getOutboundItem = outboundItemRepository.findByOutboundNo(slipNo)
+                                                                        .stream()
+                                                                        .collect(Collectors.toList());;
             outboundItemList.addAll(getOutboundItem);
         }
 
@@ -140,4 +142,13 @@ public class OutboundService {
         return repository.findById(id).orElseThrow(() -> new EntityNotFoundException(errorMessage));
     }
 
+    @Transactional
+    public void deleteOutbound(Long bizId, String outboundNo) {
+
+        outboundItemRepository.findByOutboundNo(outboundNo).orElseThrow(()-> new EntityNotFoundException("입고정보의 품목데이터가 없습니다."));
+        outboundQueryRepository.findOutboundOptional(outboundNo).orElseThrow(()-> new EntityNotFoundException("입고정보의 품목데이터가 없습니다."));
+
+        outboundItemRepository.deleteByOutboundNo(outboundNo);
+        outboundRepository.deleteByOutboundNo(outboundNo);
+    }
 }

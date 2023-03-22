@@ -47,4 +47,10 @@ public class OutboundApiController {
 
         return ResponseDto.SuccessResponse(outbound, HttpStatus.OK);
     }
+
+    @DeleteMapping("/{bizId}/{outboundNo}")
+    public ResponseDto<String> deleteOutbound(@PathVariable Long bizId, @PathVariable String outboundNo){
+        outboundService.deleteOutbound(bizId, outboundNo);
+        return ResponseDto.SuccessResponse(outboundNo, HttpStatus.OK);
+    }
 }
