@@ -33,6 +33,7 @@ public class ItemStock {
     private String makeLotNo;
     private String makeDate;
     private String expDate;
+    private String location;
     private Integer qty;
 
 
