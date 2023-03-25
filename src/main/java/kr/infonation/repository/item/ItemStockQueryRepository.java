@@ -28,7 +28,19 @@ public class ItemStockQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public List<ItemStockDto.Response> findItemStock(Long bizId, Long centerId, Long customerId, Long itemId,
+    public ItemStock getItemStock(Long bizId, Long centerId, Long customerId, Long itemId,
+                                                     String makeLotNo, String makeDate, String expDate, String location){
+        return queryFactory.selectFrom(itemStock)
+                .leftJoin(itemStock.biz, biz)
+                .leftJoin(itemStock.center, center)
+                .leftJoin(itemStock.customer, customer)
+                .leftJoin(itemStock.item, item)
+                .where(eqBizId(bizId).and(eqCenterId(centerId)).and(eqCustomerId(customerId))
+                        .and(eqItemId(itemId)).and(eqMakeLotNo(makeLotNo)).and(eqMakeDate(makeDate))
+                        .and(eqExpDate(expDate)).and(eqLocation(location)))
+                .fetchOne();
+    }
+    public List<ItemStockDto.Response> findItemStockList(Long bizId, Long centerId, Long customerId, Long itemId,
                                           String makeLotNo, String makeDate, String expDate, String location){
         return queryFactory.select(Projections.constructor
                                     (ItemStockDto.Response.class, biz.id, center.id, customer.id, item.id,
