@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Optional;
 
 import static kr.infonation.domain.biz.QBiz.biz;
 import static kr.infonation.domain.center.QCenter.center;
@@ -28,9 +29,9 @@ public class ItemStockQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public ItemStock getItemStock(Long bizId, Long centerId, Long customerId, Long itemId,
-                                                     String makeLotNo, String makeDate, String expDate, String location){
-        return queryFactory.selectFrom(itemStock)
+    public Optional<ItemStock> getItemStock(Long bizId, Long centerId, Long customerId, Long itemId,
+                                           String makeLotNo, String makeDate, String expDate, String location){
+        return Optional.ofNullable(queryFactory.selectFrom(itemStock)
                 .leftJoin(itemStock.biz, biz)
                 .leftJoin(itemStock.center, center)
                 .leftJoin(itemStock.customer, customer)
@@ -38,7 +39,7 @@ public class ItemStockQueryRepository {
                 .where(eqBizId(bizId).and(eqCenterId(centerId)).and(eqCustomerId(customerId))
                         .and(eqItemId(itemId)).and(eqMakeLotNo(makeLotNo)).and(eqMakeDate(makeDate))
                         .and(eqExpDate(expDate)).and(eqLocation(location)))
-                .fetchOne();
+                .fetchOne());
     }
     public List<ItemStockDto.Response> findItemStockList(Long bizId, Long centerId, Long customerId, Long itemId,
                                           String makeLotNo, String makeDate, String expDate, String location){

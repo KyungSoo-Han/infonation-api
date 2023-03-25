@@ -21,7 +21,7 @@ public class ItemStockService {
 
         ItemStock itemStock = itemStockQueryRepository.getItemStock(request.getBizId(), request.getCenterId(), request.getCustomerId(),
                 request.getItemId(), request.getMakeLotNo(), request.getMakeDate(),
-                request.getExpDate(), request.getLocation());
+                request.getExpDate(), request.getLocation()).get();
 
         itemStock.inboundStock(inboundQty);
 
@@ -32,7 +32,7 @@ public class ItemStockService {
 
         ItemStock itemStock = itemStockQueryRepository.getItemStock(request.getBizId(), request.getCenterId(), request.getCustomerId(),
                 request.getItemId(), request.getMakeLotNo(), request.getMakeDate(),
-                request.getExpDate(), request.getLocation());
+                request.getExpDate(), request.getLocation()).get();
 
         itemStock.outboundStock(outboundQty);
 

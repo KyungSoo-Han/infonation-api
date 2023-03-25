@@ -8,6 +8,7 @@ import kr.infonation.domain.cust.Supplier;
 import kr.infonation.domain.inbound.Inbound;
 import kr.infonation.domain.inbound.InboundItem;
 import kr.infonation.domain.item.Item;
+import kr.infonation.domain.item.ItemStock;
 import kr.infonation.dto.inbound.InboundDto;
 import kr.infonation.dto.inbound.InboundQueryDto;
 import kr.infonation.dto.inbound.InboundSrchCond;
@@ -20,6 +21,8 @@ import kr.infonation.repository.inbound.InboundItemRepository;
 import kr.infonation.repository.inbound.InboundQueryRepository;
 import kr.infonation.repository.inbound.InboundRepository;
 import kr.infonation.repository.item.ItemRepository;
+import kr.infonation.repository.item.ItemStockQueryRepository;
+import kr.infonation.repository.item.ItemStockRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
@@ -44,10 +47,12 @@ public class InboundService {
     private final SlipNoService slipNoService;
     private final ItemRepository itemRepository;
     private final InboundQueryRepository inboundQueryRepository;
+    private final ItemStockQueryRepository stockQueryRepository;
+    private final ItemStockRepository stockRepository;
+
 
     public List<InboundQueryDto> findInbound(String inboundNo) {
        return inboundQueryRepository.findInbound(inboundNo);
-
     }
 
     public List<InboundQueryDto> findInboundList(InboundSrchCond srchCond){
@@ -75,20 +80,27 @@ public class InboundService {
 
             Item item = findByIdOrThrow(itemRepository, req.getItemId(), "품목을 찾을 수 없습니다.");
 
+            Optional<ItemStock> getItemStock = stockQueryRepository.getItemStock(biz.getId(), center.getId(), customer.getId(), item.getId(),
+                    req.getMakeLotNo(), req.getMakeDate(), req.getExpDate(), "A01-01-01");
+
+            InboundItem inboundItem;
             if (req.getInboundSeq() == null) {
                 // 순번이 없을 경우 신규 생성
-                InboundItem inboundItem = inboundItemRepository.save(
+                inboundItem = inboundItemRepository.save(
                         req.toEntity(inbound, item, req.getQty(), req.getPrice(), req.getExpDate(),
                                 req.getMakeLotNo(), req.getMakeDate(), req.getSubRemark()));
 
                 inbound.addInboundItem(inboundItem);
+
             } else {
                 // 순번이 있는 경우에는 find후 엔티티 update
-                inboundItemRepository.findById(req.getInboundSeq())
-                        .get()
-                        .update(item, req.getQty(), req.getPrice(), req.getExpDate(),
+                inboundItem = inboundItemRepository.findById(req.getInboundSeq()).get();
+
+                inboundItem.update(item, req.getQty(), req.getPrice(), req.getExpDate(),
                                 req.getMakeLotNo(), req.getMakeDate(), req.getSubRemark(), req.isStatus());
+
             }
+            setStockQty(biz, center, customer, req, item, getItemStock, inboundItem);
         }
 
         // 기존에 저장된 품목정보와 신규로 입력된 품목정보를 응답 객체로 생성
@@ -109,6 +121,22 @@ public class InboundService {
         );
 
         return response;
+    }
+
+    private void setStockQty(Biz biz, Center center, Customer customer, InboundDto.ItemCreateRequest req, Item item, Optional<ItemStock> getItemStock, InboundItem inboundItem) {
+        if(getItemStock.isEmpty()){
+            ItemStock itemStock = ItemStock.builder()
+                    .biz(biz).center(center).customer(customer).item(item)
+                    .stockQty(req.getQty()).location("A01-01-01").expDate(req.getExpDate()).makeDate(req.getMakeDate())
+                    .makeLotNo(req.getMakeLotNo()).build();
+
+            stockRepository.save(itemStock);
+        }
+        else{
+            ItemStock itemStock = getItemStock.get();
+            int modifyInboundQty = itemStock.getStockQty() + req.getQty() - inboundItem.getQty();
+            itemStock.inboundStock(modifyInboundQty);
+        }
     }
 
     /***

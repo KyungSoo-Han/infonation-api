@@ -36,6 +36,6 @@ public class ItemStockDto {
         private String makeDate;
         private String expDate;
         private String location;
-        private Integer qty;
+        private int qty;
     }
 }
