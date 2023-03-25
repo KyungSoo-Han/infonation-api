@@ -5,6 +5,7 @@ import kr.infonation.domain.biz.Biz;
 import kr.infonation.domain.center.Center;
 import kr.infonation.domain.cust.Customer;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -35,8 +36,20 @@ public class ItemStock {
     private String makeDate;
     private String expDate;
     private String location;
-    private Integer stockQty;
+    private int stockQty;
 
+    @Builder
+    public ItemStock(Biz biz, Center center, Customer customer, Item item, String makeLotNo, String makeDate, String expDate, String location, int stockQty) {
+        this.biz = biz;
+        this.center = center;
+        this.customer = customer;
+        this.item = item;
+        this.makeLotNo = makeLotNo;
+        this.makeDate = makeDate;
+        this.expDate = expDate;
+        this.location = location;
+        this.stockQty = stockQty;
+    }
 
     public void inboundStock(int inboundQty){
         this.stockQty += inboundQty;
