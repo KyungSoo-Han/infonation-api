@@ -92,15 +92,19 @@ public class InboundService {
 
                 inbound.addInboundItem(inboundItem);
 
+                setStockQty(biz, center, customer, req, item, getItemStock, inboundItem);
+
             } else {
                 // 순번이 있는 경우에는 find후 엔티티 update
                 inboundItem = inboundItemRepository.findById(req.getInboundSeq()).get();
+
+                // 기존 입고량과 변경된 입고량 계산을 위해 update전 수행
+                setStockQty(biz, center, customer, req, item, getItemStock, inboundItem);
 
                 inboundItem.update(item, req.getQty(), req.getPrice(), req.getExpDate(),
                                 req.getMakeLotNo(), req.getMakeDate(), req.getSubRemark(), req.isStatus());
 
             }
-            setStockQty(biz, center, customer, req, item, getItemStock, inboundItem);
         }
 
         // 기존에 저장된 품목정보와 신규로 입력된 품목정보를 응답 객체로 생성
@@ -123,8 +127,20 @@ public class InboundService {
         return response;
     }
 
+    /***
+     * 재고 반영 (개선 필요)
+     * @param biz
+     * @param center
+     * @param customer
+     * @param req
+     * @param item
+     * @param getItemStock
+     * @param inboundItem
+     */
     private void setStockQty(Biz biz, Center center, Customer customer, InboundDto.ItemCreateRequest req, Item item, Optional<ItemStock> getItemStock, InboundItem inboundItem) {
+
         if(getItemStock.isEmpty()){
+            // 재고가 없으면 생성
             ItemStock itemStock = ItemStock.builder()
                     .biz(biz).center(center).customer(customer).item(item)
                     .stockQty(req.getQty()).location("A01-01-01").expDate(req.getExpDate()).makeDate(req.getMakeDate())
@@ -133,8 +149,13 @@ public class InboundService {
             stockRepository.save(itemStock);
         }
         else{
+            // 재고가 있는데 수량이 변경되면 계산하여 재고 반영
             ItemStock itemStock = getItemStock.get();
-            int modifyInboundQty = itemStock.getStockQty() + req.getQty() - inboundItem.getQty();
+            // 22- 10
+            int modifyInboundQty = req.getQty() - inboundItem.getQty();
+            System.out.println("req.getQty() = " + req.getQty());
+            System.out.println("inboundItem.getQty() = " + inboundItem.getQty());
+
             itemStock.inboundStock(modifyInboundQty);
         }
     }
