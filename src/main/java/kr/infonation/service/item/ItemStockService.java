@@ -1,5 +1,6 @@
 package kr.infonation.service.item;
 
+import kr.infonation.config.CustomException;
 import kr.infonation.domain.item.ItemStock;
 import kr.infonation.dto.item.ItemStockDto;
 import kr.infonation.repository.item.ItemStockQueryRepository;
@@ -16,9 +17,30 @@ public class ItemStockService {
 
     private final ItemStockQueryRepository itemStockQueryRepository;
 
+    public ItemStock inboundStock(ItemStockDto.Request request, int inboundQty){
+
+        ItemStock itemStock = itemStockQueryRepository.getItemStock(request.getBizId(), request.getCenterId(), request.getCustomerId(),
+                request.getItemId(), request.getMakeLotNo(), request.getMakeDate(),
+                request.getExpDate(), request.getLocation());
+
+        itemStock.inboundStock(inboundQty);
+
+        return itemStock;
+    }
+
+    public ItemStock outboundStock(ItemStockDto.Request request, int outboundQty) throws CustomException {
+
+        ItemStock itemStock = itemStockQueryRepository.getItemStock(request.getBizId(), request.getCenterId(), request.getCustomerId(),
+                request.getItemId(), request.getMakeLotNo(), request.getMakeDate(),
+                request.getExpDate(), request.getLocation());
+
+        itemStock.outboundStock(outboundQty);
+
+        return itemStock;
+    }
     public List<ItemStockDto.Response> findItemStock(ItemStockDto.Request request){
 
-        return itemStockQueryRepository.findItemStock(request.getBizId(), request.getCenterId(), request.getCustomerId(),
+        return itemStockQueryRepository.findItemStockList(request.getBizId(), request.getCenterId(), request.getCustomerId(),
                 request.getItemId(), request.getMakeLotNo(), request.getMakeDate(),
                 request.getExpDate(), request.getLocation());
     }

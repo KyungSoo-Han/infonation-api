@@ -1,5 +1,6 @@
 package kr.infonation.domain.item;
 
+import kr.infonation.config.CustomException;
 import kr.infonation.domain.biz.Biz;
 import kr.infonation.domain.center.Center;
 import kr.infonation.domain.cust.Customer;
@@ -34,9 +35,20 @@ public class ItemStock {
     private String makeDate;
     private String expDate;
     private String location;
-    private Integer qty;
+    private Integer stockQty;
 
 
+    public void inboundStock(int inboundQty){
+        this.stockQty += inboundQty;
+    }
+
+    public void outboundStock(int outboundQty) throws CustomException {
+        int restStock = this.stockQty - outboundQty;
+        if(restStock < 0){
+            throw new CustomException("재고가 부족합니다.");
+        }
+        this.stockQty = restStock;
+    }
 
 
 }
