@@ -45,6 +45,17 @@ public class SelectRepository {
 
             System.out.println("selectDto = " + selectDto);
         }
+        else if (gbn.equals("destination")){
+            selectDto = em.createQuery("select new kr.infonation.common.dto.SelectDto( c.id, c.name) " +
+                            "from Destination c where c.biz.id = :bizId and c.customer.id = :parentId and (  c.id = :codeId or :codeId is null ) and c.name like CONCAT('%', COALESCE(:codeName,''), '%')")
+                    .setParameter("bizId", bizId)
+                    .setParameter("parentId", parentId)
+                    .setParameter("codeId", codeId)
+                    .setParameter("codeName", codeName)
+                    .getResultList();
+
+            System.out.println("selectDto = " + selectDto);
+        }
         else if (gbn.equals("item")) {
             selectDto = em.createQuery("select new kr.infonation.common.dto.SelectDto( c.id, c.name) " +
                             "from Item c where c.biz.id = :bizId and c.customer.id = :parentId and (:codeId is null or c.id = :codeId) and c.name like CONCAT('%', :codeName, '%')")
