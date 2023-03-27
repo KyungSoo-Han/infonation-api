@@ -92,14 +92,14 @@ public class InboundService {
 
                 inbound.addInboundItem(inboundItem);
 
-                setStockQty(biz, center, customer, req, item, getItemStock, inboundItem);
+                inboundStockQty(biz, center, customer, req, item, getItemStock, inboundItem);
 
             } else {
                 // 순번이 있는 경우에는 find후 엔티티 update
                 inboundItem = inboundItemRepository.findById(req.getInboundSeq()).get();
 
                 // 기존 입고량과 변경된 입고량 계산을 위해 update전 수행
-                setStockQty(biz, center, customer, req, item, getItemStock, inboundItem);
+                inboundStockQty(biz, center, customer, req, item, getItemStock, inboundItem);
 
                 inboundItem.update(item, req.getQty(), req.getPrice(), req.getExpDate(),
                                 req.getMakeLotNo(), req.getMakeDate(), req.getSubRemark(), req.isStatus());
@@ -137,7 +137,7 @@ public class InboundService {
      * @param getItemStock
      * @param inboundItem
      */
-    private void setStockQty(Biz biz, Center center, Customer customer, InboundDto.ItemCreateRequest req, Item item, Optional<ItemStock> getItemStock, InboundItem inboundItem) {
+    private void inboundStockQty(Biz biz, Center center, Customer customer, InboundDto.ItemCreateRequest req, Item item, Optional<ItemStock> getItemStock, InboundItem inboundItem) {
 
         if(getItemStock.isEmpty()){
             // 재고가 없으면 생성

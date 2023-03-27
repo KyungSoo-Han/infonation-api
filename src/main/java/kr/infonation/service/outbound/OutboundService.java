@@ -5,9 +5,12 @@ import kr.infonation.domain.biz.Biz;
 import kr.infonation.domain.center.Center;
 import kr.infonation.domain.cust.Customer;
 import kr.infonation.domain.cust.Destination;
+import kr.infonation.domain.inbound.InboundItem;
 import kr.infonation.domain.item.Item;
+import kr.infonation.domain.item.ItemStock;
 import kr.infonation.domain.outbound.Outbound;
 import kr.infonation.domain.outbound.OutboundItem;
+import kr.infonation.dto.inbound.InboundDto;
 import kr.infonation.dto.outbound.OutboundQueryDto;
 import kr.infonation.dto.outbound.OutboundSrchCond;
 import kr.infonation.dto.outbound.OutboundQueryDto;
@@ -19,6 +22,7 @@ import kr.infonation.repository.biz.BizRepository;
 import kr.infonation.repository.center.CenterRepository;
 import kr.infonation.repository.cust.CustomerRepository;
 import kr.infonation.repository.cust.DestinationRepository;
+import kr.infonation.repository.item.ItemStockQueryRepository;
 import kr.infonation.repository.outbound.OutboundQueryRepository;
 import kr.infonation.repository.item.ItemRepository;
 import kr.infonation.repository.outbound.OutboundItemRepository;
@@ -31,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -48,6 +53,7 @@ public class OutboundService {
     private final ItemRepository itemRepository;
     private final SlipNoService slipNoService;
     private final OutboundQueryRepository outboundQueryRepository;
+    private final ItemStockQueryRepository stockQueryRepository;
 
     public List<OutboundQueryDto> findOutbound(String outboundNo) {
         return outboundQueryRepository.findOutbound(outboundNo);
@@ -77,18 +83,25 @@ public class OutboundService {
             System.out.println("req = " + req);
             Item item = findByIdOrThrow(itemRepository, req.getItemId(), "품목을 찾을 수 없습니다.");
 
+            Optional<ItemStock> getItemStock = stockQueryRepository.getItemStock(biz.getId(), center.getId(), customer.getId(), item.getId(),
+                    req.getMakeLotNo(), req.getMakeDate(), req.getExpDate(), "A01-01-01");
+
             if (req.getOutboundSeq() == null) {
                 // 순번이 없을 경우 신규 생성
                 OutboundItem outboundItem = outboundItemRepository.save(
                         req.toEntity(outbound, item, req.getQty(), req.getPrice(), req.getExpDate(),
                                 req.getMakeLotNo(), req.getMakeDate(), req.getSubRemark()));
 
+                outboundStockQty(req, getItemStock, outboundItem);
+
                 outbound.addOutboundItem(outboundItem);
             } else {
                 // 순번이 있는 경우에는 find후 엔티티 update
-                outboundItemRepository.findById(req.getOutboundSeq())
-                        .get()
-                        .update(item, req.getQty(), req.getPrice(), req.getExpDate(),
+                OutboundItem outboundItem = outboundItemRepository.findById(req.getOutboundSeq()).get();
+
+                outboundStockQty(req, getItemStock, outboundItem);
+
+                outboundItem.update(item, req.getQty(), req.getPrice(), req.getExpDate(),
                                 req.getMakeLotNo(), req.getMakeDate(), req.getSubRemark(), req.isStatus());
             }
         }
@@ -107,6 +120,19 @@ public class OutboundService {
                                                 destination.getId(),
                                                 destination.getName(),
                                                 itemCreateResponseStream.collect(Collectors.toList()));
+    }
+
+    private void outboundStockQty(OutboundDto.ItemCreateRequest req, Optional<ItemStock> getItemStock, OutboundItem outboundItem) throws CustomException {
+
+        // 재고가 있는데 수량이 변경되면 계산하여 재고 반영
+        ItemStock itemStock = getItemStock.get();
+        // 변경 10 - 원래 5 = 5
+        // 변경 5 - 원래 10 = -5
+        int modifyInboundQty = req.getQty() - outboundItem.getQty();
+        System.out.println("req.getQty() = " + req.getQty());
+        System.out.println("outboundItem.getQty() = " + outboundItem.getQty());
+
+        itemStock.outboundStock(modifyInboundQty);
     }
 
     /***
