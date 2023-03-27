@@ -91,18 +91,22 @@ public class OutboundService {
                 OutboundItem outboundItem = outboundItemRepository.save(
                         req.toEntity(outbound, item, req.getQty(), req.getPrice(), req.getExpDate(),
                                 req.getMakeLotNo(), req.getMakeDate(), req.getSubRemark()));
-
-                outboundStockQty(req, getItemStock, outboundItem);
+                outboundStockQty(req, getItemStock);
 
                 outbound.addOutboundItem(outboundItem);
             } else {
                 // 순번이 있는 경우에는 find후 엔티티 update
                 OutboundItem outboundItem = outboundItemRepository.findById(req.getOutboundSeq()).get();
 
-                outboundStockQty(req, getItemStock, outboundItem);
+                int beforeOutboundQty = outboundItem.getQty();
+                int modifyOutboundQty = req.getQty();
 
                 outboundItem.update(item, req.getQty(), req.getPrice(), req.getExpDate(),
                                 req.getMakeLotNo(), req.getMakeDate(), req.getSubRemark(), req.isStatus());
+
+                // 수량이 변경된 경우 계산하여 재고 반영
+                req.setQty(modifyOutboundQty - beforeOutboundQty);
+                outboundStockQty(req, getItemStock);
             }
         }
 
@@ -122,17 +126,17 @@ public class OutboundService {
                                                 itemCreateResponseStream.collect(Collectors.toList()));
     }
 
-    private void outboundStockQty(OutboundDto.ItemCreateRequest req, Optional<ItemStock> getItemStock, OutboundItem outboundItem) throws CustomException {
+    private void outboundStockQty(OutboundDto.ItemCreateRequest req, Optional<ItemStock> getItemStock) throws CustomException {
 
         // 재고가 있는데 수량이 변경되면 계산하여 재고 반영
         ItemStock itemStock = getItemStock.get();
         // 변경 10 - 원래 5 = 5
         // 변경 5 - 원래 10 = -5
-        int modifyInboundQty = req.getQty() - outboundItem.getQty();
+        /* int modifyInboundQty = req.getQty() - outboundItem.getQty();
         System.out.println("req.getQty() = " + req.getQty());
         System.out.println("outboundItem.getQty() = " + outboundItem.getQty());
-
-        itemStock.outboundStock(modifyInboundQty);
+        */
+        itemStock.outboundStock(req.getQty() );
     }
 
     /***
@@ -162,7 +166,7 @@ public class OutboundService {
      */
     private String getSlipNo(OutboundDto.CreateRequest request) throws CustomException {
         System.out.println("request = " + request);
-        String slipNo = request.getOutboundNo() == null
+        String slipNo = request.getOutboundNo() == null || request.getOutboundNo().isEmpty()
                 ? slipNoService.generateSlipNo("O", request.getOutboundDate().replace("-", ""))
                                                                     : request.getOutboundNo();
         return slipNo;
