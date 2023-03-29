@@ -46,7 +46,7 @@ public class ItemStockQueryRepository {
         return queryFactory.select(Projections.constructor
                                     (ItemStockDto.Response.class, biz.id, center.id, customer.id, item.id,
                                             itemStock.makeLotNo, itemStock.makeDate, itemStock.expDate,
-                                            itemStock.location, itemStock.location, itemStock.qty))
+                                            itemStock.location, itemStock.location, itemStock.stockQty))
                     .from(itemStock)
                     .leftJoin(itemStock.biz, biz)
                     .leftJoin(itemStock.center, center)

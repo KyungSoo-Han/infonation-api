@@ -17,13 +17,13 @@ public class UserDto {
         private String birthDate;
         private Role role;
 
-        public Users toEntity(){
+        public Users toEntity(String encodingPassword){
             return Users.builder()
                     .email(email)
                     .birthDate(birthDate)
                     .name(name)
                     .phoneNo(phoneNo)
-                    .password(password)
+                    .password(encodingPassword)
                     .role(role)
                     .build();
         }

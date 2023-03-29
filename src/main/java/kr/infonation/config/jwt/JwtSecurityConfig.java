@@ -14,7 +14,7 @@ public class JwtSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurity
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http
-                .formLogin().usernameParameter("userId")
+                .formLogin().usernameParameter("email")
                 .and().addFilterBefore(
             new JwtFilter(tokenProvider),
             UsernamePasswordAuthenticationFilter.class
