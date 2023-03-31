@@ -14,6 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -41,22 +42,22 @@ public class UsersApiController {
     @PostMapping("/login")
     public ResponseDto<Map> Login(@RequestBody LoginDto.Request request){
 
-        System.out.println("request = " + request);
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
         System.out.println("authenticationToken = " + authenticationToken);
 
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        System.out.println("authentication = " + authentication);
+
+        UserDto.Response userDto = new UserDto.Response((Users)authentication.getPrincipal());
 
         String jwt = tokenProvider.createToken(authentication);
-
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
 
         Map<String, Object> map = new HashMap<>();
         map.put("token", jwt);
+        map.put("userInfo", userDto);
 
         return ResponseDto.SuccessResponse(map, HttpStatus.OK);
     }

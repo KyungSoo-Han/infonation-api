@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,15 +23,10 @@ public class CustomUserDetailService  implements UserDetailsService {
     private final UsersRepository usersRepository;
 
     @Override
-    @Transactional
     public UserDetails loadUserByUsername(final String email) {
-
-        User getUser = usersRepository.findByEmail(email)
-                .map(user -> makeUserObj(user))
-                .orElseThrow(() -> new UsernameNotFoundException(email + " -> 데이터베이스에서 찾을 수 없습니다."));
-        System.out.println("getUser = " + getUser);
-
-        return getUser;
+        return usersRepository.findByEmail(email)
+                //.map(user -> makeUserObj(user))
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 이메일입니다."));
     }
 
     private org.springframework.security.core.userdetails.User makeUserObj(Users users) {

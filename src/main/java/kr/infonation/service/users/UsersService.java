@@ -25,4 +25,9 @@ public class UsersService {
         return usersRepository.getReferenceById(userId);
     }
 
+    public UserDto.Response findByLogin(String email, String password){
+        Users user = usersRepository.findLoginUser(email, password);
+        return new UserDto.Response(user);
+    }
+
 }
