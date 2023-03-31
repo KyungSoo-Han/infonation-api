@@ -6,7 +6,25 @@ import kr.infonation.domain.users.Users;
 import lombok.Data;
 
 public class UserDto {
+    @Data
+    @ApiModel("UserResponse")
+    public static class Response {
+        private Long id;
+        private String email;
+        private String name;
+        private String phoneNo;
+        private String birthDate;
+        private Role role;
 
+        public Response(Users users) {
+            this.id = users.getId();
+            this.email = users.getEmail();
+            this.name = users.getName();
+            this.phoneNo = users.getPhoneNo();
+            this.birthDate = users.getBirthDate();
+            this.role = users.getRole();
+        }
+    }
     @Data
     @ApiModel("UserCreateRequest")
     public static class CreateRequest {
