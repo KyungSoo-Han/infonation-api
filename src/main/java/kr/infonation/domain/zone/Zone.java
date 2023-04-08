@@ -15,8 +15,9 @@ public class Zone {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "zone_id")
     private Long id;
+    private String code;
     private String name;
-
+    private boolean isUse;
 
     @JoinColumn(name = "biz_id")
     @ManyToOne(fetch = FetchType.LAZY)

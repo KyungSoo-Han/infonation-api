@@ -22,6 +22,10 @@ public class Location extends BaseEntity {
     private String code;
     private String name;
     private String type;
+    private Integer locX;
+    private Integer locY;
+    private Integer locZ;
+    private boolean isUse;
     @JoinColumn(name = "biz_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Biz biz;
