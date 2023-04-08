@@ -1,7 +1,6 @@
 package kr.infonation.dto.inbound;
 
-import kr.infonation.domain.inbound.InboundGbn;
-import lombok.AllArgsConstructor;
+import kr.infonation.domain.base.InboundGbn;
 import lombok.Data;
 
 @Data

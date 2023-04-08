@@ -1,6 +1,7 @@
 package kr.infonation.domain.inbound;
 
 import kr.infonation.domain.base.BaseEntity;
+import kr.infonation.domain.base.InboundGbn;
 import kr.infonation.domain.biz.Biz;
 import kr.infonation.domain.center.Center;
 import kr.infonation.domain.cust.Customer;
@@ -58,7 +59,7 @@ public class Inbound extends BaseEntity {
 
     @Builder
     public Inbound(String inboundNo, String inboundDate, Biz biz, Center center,
-                                Customer customer, Supplier supplier, InboundGbn inBoundGbn, String remark, String inboundExpDate) {
+                   Customer customer, Supplier supplier, InboundGbn inBoundGbn, String remark, String inboundExpDate) {
         this.inboundNo = inboundNo;
         this.inboundDate = inboundDate;
         this.biz = biz;

@@ -1,4 +1,4 @@
-package kr.infonation.domain.location;
+package kr.infonation.domain.zone;
 
 import lombok.AccessLevel;
 import lombok.Getter;

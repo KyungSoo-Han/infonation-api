@@ -6,15 +6,10 @@ import kr.infonation.domain.biz.Biz;
 import kr.infonation.domain.center.Center;
 import kr.infonation.domain.cust.Customer;
 import kr.infonation.domain.cust.Destination;
-import kr.infonation.domain.outbound.OutboundGbn;
+import kr.infonation.domain.base.OutboundGbn;
 import kr.infonation.domain.outbound.OutboundItem;
 import kr.infonation.domain.outbound.Outbound;
-import kr.infonation.domain.outbound.OutboundItem;
 import kr.infonation.domain.item.Item;
-import kr.infonation.domain.outbound.Outbound;
-import kr.infonation.domain.outbound.OutboundGbn;
-import kr.infonation.dto.outbound.OutboundDto;
-import kr.infonation.dto.outbound.OutboundDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

@@ -1,22 +1,14 @@
 package kr.infonation.dto.inbound;
 
-import com.querydsl.core.annotations.QueryProjection;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModel;
 import kr.infonation.domain.biz.Biz;
 import kr.infonation.domain.center.Center;
 import kr.infonation.domain.cust.Customer;
 import kr.infonation.domain.cust.Supplier;
-import kr.infonation.domain.inbound.InboundGbn;
+import kr.infonation.domain.base.InboundGbn;
 import kr.infonation.domain.inbound.Inbound;
 import kr.infonation.domain.inbound.InboundItem;
 import kr.infonation.domain.item.Item;
-import kr.infonation.dto.biz.BizDto;
-import kr.infonation.dto.center.CenterDto;
-import kr.infonation.dto.cust.CustomerDto;
-import kr.infonation.dto.cust.SupplierDto;
-import kr.infonation.dto.item.ItemDto;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
