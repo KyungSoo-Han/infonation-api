@@ -1,4 +1,4 @@
-package kr.infonation.domain.outbound;
+package kr.infonation.domain.base;
 
 public enum OutboundGbn {
     NORMAL, RETURN

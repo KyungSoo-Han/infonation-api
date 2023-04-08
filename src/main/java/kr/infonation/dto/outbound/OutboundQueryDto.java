@@ -1,6 +1,6 @@
 package kr.infonation.dto.outbound;
 
-import kr.infonation.domain.outbound.OutboundGbn;
+import kr.infonation.domain.base.OutboundGbn;
 import lombok.Data;
 
 @Data

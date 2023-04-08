@@ -1,11 +1,10 @@
 package kr.infonation.domain.outbound;
 
+import kr.infonation.domain.base.OutboundGbn;
 import kr.infonation.domain.biz.Biz;
 import kr.infonation.domain.center.Center;
 import kr.infonation.domain.cust.Customer;
 import kr.infonation.domain.cust.Destination;
-import kr.infonation.domain.cust.Supplier;
-import kr.infonation.domain.inbound.InboundItem;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
