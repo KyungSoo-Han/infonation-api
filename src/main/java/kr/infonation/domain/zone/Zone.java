@@ -1,5 +1,7 @@
 package kr.infonation.domain.zone;
 
+import kr.infonation.domain.biz.Biz;
+import kr.infonation.domain.center.Center;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +16,15 @@ public class Zone {
     @Column(name = "zone_id")
     private Long id;
     private String name;
+
+
+    @JoinColumn(name = "biz_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Biz biz;
+
+    @JoinColumn(name = "center_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Center center;
 
 
 
