@@ -8,7 +8,7 @@ public class LocationDto {
     public static class CreateRequest{
 
     }
-    
+
     @Data
     public static class CreateResponse{
 
