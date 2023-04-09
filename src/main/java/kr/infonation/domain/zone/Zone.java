@@ -19,7 +19,8 @@ public class Zone extends BaseEntity {
     private String code;
     private String name;
     private boolean status;
-    private String type;
+    private boolean stagy;
+    private String zoneType;
     private String keepType;
     @JoinColumn(name = "biz_id")
     @ManyToOne(fetch = FetchType.LAZY)
