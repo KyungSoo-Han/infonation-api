@@ -1,6 +1,8 @@
 package kr.infonation.domain.zone;
 
 import kr.infonation.domain.base.BaseEntity;
+import kr.infonation.domain.base.KeepType;
+import kr.infonation.domain.base.ZoneType;
 import kr.infonation.domain.biz.Biz;
 import kr.infonation.domain.center.Center;
 import lombok.AccessLevel;
@@ -20,8 +22,10 @@ public class Zone extends BaseEntity {
     private String name;
     private boolean status;
     private boolean stagy;
-    private String zoneType;
-    private String keepType;
+    @Enumerated(EnumType.STRING)
+    private ZoneType zoneType;
+    @Enumerated(EnumType.STRING)
+    private KeepType keepType;
     @JoinColumn(name = "biz_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Biz biz;
