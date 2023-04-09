@@ -22,7 +22,6 @@ public class Location extends BaseEntity {
     private Long id;
     private String code;
     private String name;
-
     @Enumerated(EnumType.STRING)
     private LocationType locationType;
     private Integer axisX;
