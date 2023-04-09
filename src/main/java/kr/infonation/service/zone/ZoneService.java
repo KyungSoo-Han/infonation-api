@@ -8,11 +8,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class ZoneService {
     private final ZoneRepository zoneRepository;
 
-
+    @Transactional
     public ZoneDto.CreateResponse createZone(ZoneDto.CreateRequest request){
 
         return new ZoneDto.CreateResponse();
