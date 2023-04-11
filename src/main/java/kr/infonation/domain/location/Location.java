@@ -6,6 +6,7 @@ import kr.infonation.domain.biz.Biz;
 import kr.infonation.domain.center.Center;
 import kr.infonation.domain.zone.Zone;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -40,4 +41,18 @@ public class Location extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Zone zone;
 
+    @Builder
+    public Location(String code, String name, LocationType locationType, Integer axisX, Integer axisY, Integer axisZ,
+                    boolean status, Biz biz, Center center, Zone zone) {
+        this.code = code;
+        this.name = name;
+        this.locationType = locationType;
+        this.axisX = axisX;
+        this.axisY = axisY;
+        this.axisZ = axisZ;
+        this.status = status;
+        this.biz = biz;
+        this.center = center;
+        this.zone = zone;
+    }
 }
