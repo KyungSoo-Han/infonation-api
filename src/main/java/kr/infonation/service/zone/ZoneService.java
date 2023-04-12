@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +23,16 @@ public class ZoneService {
     private final ZoneRepository zoneRepository;
     private final BizRepository bizRepository;
     private final CenterRepository centerRepository;
+
+    public List<ZoneDto.DataResponse> findAll(){
+        List<Zone> zoneList = zoneRepository.findAll();
+        List<ZoneDto.DataResponse> responseList = zoneList
+                                                    .stream()
+                                                    .map(z -> new ZoneDto.DataResponse(z))
+                                                        .collect(Collectors.toList());
+
+        return responseList;
+    }
 
     @Transactional
     public ZoneDto.CreateResponse createZone(ZoneDto.CreateRequest request){
