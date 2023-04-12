@@ -1,5 +1,6 @@
 package kr.infonation.dto.location;
 
+import io.swagger.annotations.ApiModel;
 import kr.infonation.domain.base.LocationType;
 import kr.infonation.domain.biz.Biz;
 import kr.infonation.domain.center.Center;
@@ -12,6 +13,7 @@ import javax.persistence.*;
 
 public class LocationDto {
     @Data
+    @ApiModel("LocationResponse")
     public static class DataResponse {
         private Long id;
         private String code;
@@ -40,6 +42,7 @@ public class LocationDto {
         }
     }
     @Data
+    @ApiModel("LocationCreateRequest")
     public static class CreateRequest{
 
         private String code;
@@ -69,6 +72,7 @@ public class LocationDto {
 
     @Data
     @AllArgsConstructor
+    @ApiModel("LocationCreateResponse")
     public static class CreateResponse{
         private Long id;
         private String code;
