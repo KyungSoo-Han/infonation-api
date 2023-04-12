@@ -6,10 +6,9 @@ import kr.infonation.dto.zone.ZoneDto;
 import kr.infonation.service.location.LocationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/location")
@@ -18,6 +17,13 @@ public class LocationApiController {
 
     private final LocationService locationService;
 
+    @GetMapping("/list")
+    public ResponseDto<List<LocationDto.DataResponse>> findAll(){
+
+        List<LocationDto.DataResponse> responseList = locationService.findAll();
+
+        return ResponseDto.SuccessResponse(responseList,HttpStatus.OK);
+    }
     @PostMapping
     public ResponseDto<LocationDto.CreateResponse> createLocation(@RequestBody LocationDto.CreateRequest request){
         LocationDto.CreateResponse response = locationService.createLocation(request);

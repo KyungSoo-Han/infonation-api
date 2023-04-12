@@ -11,7 +11,34 @@ import lombok.Data;
 import javax.persistence.*;
 
 public class LocationDto {
+    @Data
+    public static class DataResponse {
+        private Long id;
+        private String code;
+        private String name;
+        private LocationType locationType;
+        private Integer axisX;
+        private Integer axisY;
+        private Integer axisZ;
+        private boolean status;
+        private Long bizId;
+        private Long centerId;
+        private Long zoneId;
 
+        public DataResponse(Location location) {
+            this.id = location.getId();
+            this.code = location.getCode();
+            this.name = location.getName();
+            this.locationType = location.getLocationType();
+            this.axisX = location.getAxisX();
+            this.axisY = location.getAxisY();
+            this.axisZ = location.getAxisZ();
+            this.status = location.isStatus();
+            this.bizId = location.getBiz().getId();
+            this.centerId = location.getCenter().getId();
+            this.zoneId = location.getZone().getId();
+        }
+    }
     @Data
     public static class CreateRequest{
 

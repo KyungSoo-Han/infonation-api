@@ -5,6 +5,7 @@ import kr.infonation.domain.center.Center;
 import kr.infonation.domain.location.Location;
 import kr.infonation.domain.zone.Zone;
 import kr.infonation.dto.location.LocationDto;
+import kr.infonation.dto.zone.ZoneDto;
 import kr.infonation.repository.biz.BizRepository;
 import kr.infonation.repository.center.CenterRepository;
 import kr.infonation.repository.location.LocationRepository;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -24,6 +27,16 @@ public class LocationService {
     private final ZoneRepository zoneRepository;
     private final CenterRepository centerRepository;
     private final BizRepository bizRepository;
+
+    public List<LocationDto.DataResponse> findAll(){
+        List<Location> locationList = locationRepository.findAll();
+        List<LocationDto.DataResponse> responseList = locationList
+                .stream()
+                .map(l -> new LocationDto.DataResponse(l))
+                .collect(Collectors.toList());
+
+        return responseList;
+    }
 
     @Transactional
     public LocationDto.CreateResponse createLocation(LocationDto.CreateRequest request){
