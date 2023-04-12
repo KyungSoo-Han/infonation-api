@@ -1,5 +1,6 @@
 package kr.infonation.dto.zone;
 
+import io.swagger.annotations.ApiModel;
 import kr.infonation.domain.base.KeepType;
 import kr.infonation.domain.base.ZoneType;
 import kr.infonation.domain.biz.Biz;
@@ -11,6 +12,7 @@ import lombok.Data;
 public class ZoneDto {
 
     @Data
+    @ApiModel("ZoneResponse")
     public static class DataResponse{
         private Long id;
         private String code;
@@ -36,6 +38,7 @@ public class ZoneDto {
     }
 
     @Data
+    @ApiModel("ZoneCreateRequest")
     public static class CreateRequest{
         private Long bizId;
         private Long centerId;
@@ -62,6 +65,7 @@ public class ZoneDto {
 
     @Data
     @AllArgsConstructor
+    @ApiModel("ZoneCreateResponse")
     public static class CreateResponse{
         private Long id;
         private String code;
