@@ -11,6 +11,31 @@ import lombok.Data;
 public class ZoneDto {
 
     @Data
+    public static class DataResponse{
+        private Long id;
+        private String code;
+        private String name;
+        private Long bizId;
+        private Long centerId;
+        private ZoneType zoneType;
+        private KeepType keepType;
+        private boolean stagy;
+        private boolean status;
+
+        public DataResponse(Zone zone) {
+            this.id = zone.getId();
+            this.code = zone.getCode();
+            this.name = zone.getName();
+            this.bizId = zone.getBiz().getId();
+            this.centerId = zone.getCenter().getId();
+            this.zoneType = zone.getZoneType();
+            this.keepType = zone.getKeepType();
+            this.stagy = zone.isStagy();
+            this.status = zone.isStatus();
+        }
+    }
+
+    @Data
     public static class CreateRequest{
         private Long bizId;
         private Long centerId;
