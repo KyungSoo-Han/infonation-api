@@ -128,6 +128,9 @@ public class OutboundService {
 
     private void outboundStockQty(OutboundDto.ItemCreateRequest req, Optional<ItemStock> getItemStock) throws CustomException {
 
+        if(!getItemStock.isPresent()){
+            throw new CustomException("입력한 상품의 재고가 없습니다.");
+        }
         // 재고가 있는데 수량이 변경되면 계산하여 재고 반영
         ItemStock itemStock = getItemStock.get();
         // 변경 10 - 원래 5 = 5
