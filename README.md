@@ -3,10 +3,7 @@
 
 ## Fornt-End
 - GitHub Repository: infonation-web
-- URL: http://wms.infonation.kr/
 
-## API Swagger
-- http://api.infonation.kr/swagger-ui/index.html
 
 ## 개발환경
 - Java
